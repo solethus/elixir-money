@@ -1,0 +1,14 @@
+<button
+  type="submit"
+  hlmBtn
+  [attr.disabled]="loading() ? true : null"
+  (click)="clicked.emit()"
+>
+  @if (loading()) {
+    <hlm-icon name="lucideLoader2" size="sm" class="mr-2 animate-spin" />
+    Loading
+  } @else {
+    <hlm-icon [name]="submitIcon()" size="sm" class="mr-2" />
+    Next
+  }
+</button>
