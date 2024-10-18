@@ -42,8 +42,6 @@ Encore has four types of environments:
 - `local` is provisioned by Encore's CLI using local versions of infrastructure.
 Aside from determining infrastructure, environment type is also used for Secrets management.
 
-Our staging environment is of type `development`, you can see the type by going to the settings page on https://app.encore.dev/givr-xmfi/envs/staging/settings.
-
 ### Task
 
 Task is used to list and run common development commands.
@@ -129,13 +127,11 @@ In order to generate code in `store` package you should have installed [sqlc](ht
 Then just run this command from root catalog.
 
 ```shell
-cd $GIVRPATH/backend/src/givr/users/store
 sqlc generate
 ```
 
 Or you can run this task command to generate all:
 ```shell
-cd $GIVRPATH/backend/src/givr
 task sqlc-gen
 ```
 
@@ -168,7 +164,7 @@ encore secrets list secretNameFromCallAbove
 ## Deployment
 
 Deployments are synced with the GitHub repo, so when new commits are pushed to main, they will be auto-deployed.
-See the CI checks against the commits on https://github.com/givr-eng/backend/commits/main/ to see if they succeeded.
+See the CI checks against the commits on the main branch to see if they succeeded.
 
 Head over to the [Cloud Dashboard](https://app.encore.dev) to monitor your deployment and find your production URL.
 
