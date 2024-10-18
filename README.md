@@ -81,7 +81,7 @@ task test
 ```
 or from a given service directory, if you only want to run those tests:
 ```shell
-cd charities
+cd users
 encore test
 ```
 
@@ -110,9 +110,9 @@ encore db conn-uri users --env=local
 
 #### Open DB Shell
 
-To open charities DB, local:
+To open users DB, local:
 ```shell
-encore db shell charities --env=local
+encore db shell users --env=local
 ```
 
 #### Re-running a migration
