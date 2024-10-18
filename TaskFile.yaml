@@ -14,22 +14,17 @@ tasks:
     cmds:
       - encore run
 
-
   # Test
   test:
     desc: Run all unit tests.
     cmds:
       - encore test
 
-
-
-
   test-coverage:
     desc: Run unit tests with coverage reporting
     cmds:
       - encore test -coverprofile=coverage.out ./...
       - go tool cover -html=coverage.out
-
 
   # Deployment
   deploy:
@@ -43,14 +38,25 @@ tasks:
     cmds:
       - encore logs
 
-
   encore-update:
     desc: Update encore CLI version
     cmds:
       - encore version update
 
+  # Gen
+  gen:
+    desc: Run all generation commands, from bottom up
+    deps:
+      - gen-ts
+      - sqlc-gen
 
-  # SQL generation
+  ## Client
+  gen-ts:
+    desc:  Generates an ts API client
+    cmds:
+      - encore gen client --env=local --output=fe/gen/client.ts
+
+  ## SQL generation
   sqlc-gen:
     desc: Regenerate all sqlc files
     deps:
