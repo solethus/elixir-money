@@ -17,6 +17,12 @@ export const routes: Routes = [
     data: { animation: 'HomePage' },
   },
   {
+    path: 'lookup',
+    loadComponent: () =>
+      import('./lookup/lookup.component').then((c) => c.LookupComponent),
+    data: { animation: 'LookupPage' },
+  },
+  {
     path: 'send',
     loadComponent: () =>
       import('./send/send.component').then((c) => c.SendComponent),
