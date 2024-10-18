@@ -63,10 +63,22 @@ export interface ClientOptions {
 }
 
 export namespace payments {
+    export interface QuoteParams {
+        "currency_code": string
+        amount: number
+        "target_currency_code": string
+    }
+
+    export interface QuoteResponse {
+        "target_currency_amount": number
+        "usdc_amount": number
+        "usdc_fees": number
+    }
+
     export interface SendParams {
         "target_phone_no": string
         "sender_phone_no": string
-        "amount_usdc": decimal.Decimal
+        "amount_usdc": number
     }
 
     export interface SendResponse {
@@ -77,6 +89,15 @@ export namespace payments {
 
         constructor(baseClient: BaseClient) {
             this.baseClient = baseClient
+        }
+
+        /**
+         * Quote takes an amount in any currency, and returns a quote for that amount in USDC, and also a target currency
+         */
+        public async Quote(params: QuoteParams): Promise<QuoteResponse> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callAPI("POST", `/payments.Quote`, JSON.stringify(params))
+            return await resp.json() as QuoteResponse
         }
 
         public async Send(params: SendParams): Promise<SendResponse> {
@@ -121,15 +142,6 @@ export namespace users {
             const resp = await this.baseClient.callAPI("POST", `/users.LookupByPhoneNo`, JSON.stringify(params))
             return await resp.json() as LookupByPhoneNoResponse
         }
-    }
-}
-
-export namespace decimal {
-    /**
-     * Decimal represents a fixed-point decimal. It is immutable.
-     * number = value * 10 ^ exp
-     */
-    export interface Decimal {
     }
 }
 
