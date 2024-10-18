@@ -1,34 +1,31 @@
-import { Injectable, signal } from '@angular/core';
-
-export interface User {
-  name: string;
-  phoneNumber: string;
-  country: string;
-  balance: string;
-}
+import { Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { users } from '@client';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private currentUser = signal<User | null>(null);
+  private currentUser: WritableSignal<users.User>;
 
-  user = this.currentUser.asReadonly();
+  user: Signal<users.User>;
 
   constructor() {
-    this.currentUser.set({
-      name: 'Daniel',
-      phoneNumber: '123456789',
-      country: 'Portugal',
-      balance: '$100',
+    this.currentUser = signal({
+      id: 1,
+      first_name: 'Daniel',
+      surname: 'Santiago',
+      phone_number: '123456789',
+      country_code: 'Portugal',
+      fiat_wallet_currency: 'EUR',
+      usdc_wallet_address: '0x123456789',
+      created_at: new Date().getTime().toString(),
+      updated_at: new Date().getTime().toString(),
+      image_url: 'https://randomuser.me/api/portraits',
     });
+    this.user = this.currentUser.asReadonly();
   }
 
-  setUser(user: User) {
+  setUser(user: users.User) {
     this.currentUser.set(user);
-  }
-
-  clearUser() {
-    this.currentUser.set(null);
   }
 }
