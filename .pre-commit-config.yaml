@@ -1,0 +1,20 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-yaml
+
+  - repo: https://github.com/tekwizely/pre-commit-golang
+    rev: v1.0.0-rc.1
+    hooks:
+      # Go Vet
+      - id: go-vet-repo-mod
+
+      # Formatters
+      - id: go-imports-repo
+      - id: go-fumpt-repo   # install with `go install mvdan.cc/gofumpt@latest`
+
+      # Go Mod Tidy
+      - id: go-mod-tidy-repo
