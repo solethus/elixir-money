@@ -13,8 +13,8 @@ repos:
       - id: go-vet-repo-mod
 
       # Formatters
-      - id: go-imports-repo
-      - id: go-fumpt-repo   # install with `go install mvdan.cc/gofumpt@latest`
+      - id: go-imports
+      - id: go-fumpt   # install with `go install mvdan.cc/gofumpt@latest`
         args: [ "-w" ]
 
       # Go Mod Tidy
