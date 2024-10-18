@@ -8,13 +8,12 @@ import (
 
 	"encore.app/users"
 	"encore.dev/beta/errs"
-	"github.com/shopspring/decimal"
 )
 
 type SendParams struct {
-	ReceiverPhoneNo string          `json:"target_phone_no"`
-	SenderPhoneNo   string          `json:"sender_phone_no"`
-	AmountUSDC      decimal.Decimal `json:"amount_usdc"`
+	ReceiverPhoneNo string  `json:"target_phone_no"`
+	SenderPhoneNo   string  `json:"sender_phone_no"`
+	AmountUSDC      float64 `json:"amount_usdc"`
 }
 
 type SendResponse struct{}

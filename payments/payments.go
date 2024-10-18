@@ -21,3 +21,7 @@ func initService() (*Service, error) {
 var db = sqldb.NewDatabase("payments", sqldb.DatabaseConfig{
 	Migrations: "./store/migrations",
 })
+
+var secrets struct {
+	ExchangeRateAPIKey string
+}
