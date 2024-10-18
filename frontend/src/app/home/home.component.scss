@@ -1,0 +1,21 @@
+:host {
+  display: block;
+  padding: 10px;
+}
+
+.content {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+
+  > * {
+    flex: 1;
+  }
+
+  h4,
+  p {
+    display: inline-block;
+  }
+}
