@@ -1,13 +1,13 @@
-@if (user) {
-  <h2 hlmH2>Welcome {{ user.name }}</h2>
-
-  <div class="content">
-    <div class="balance">
-      <h4 hlmH4>Balance:</h4>
-      &nbsp;
-      <p hlmP>{{ user.balance }}</p>
-    </div>
-
-    <button hlmBtn routerLink="/send">Send Money</button>
+<app-header
+  [showBackButton]="false"
+  [title]="'Welcome ' + user.first_name + ' ' + user.surname"
+/>
+<div class="content">
+  <div class="balance">
+    <h4 hlmH4>Balance:</h4>
+    &nbsp;
+    <!-- <p hlmP>{{ user.balance }}</p> -->
   </div>
-}
+
+  <button hlmBtn routerLink="/lookup">Send Money</button>
+</div>

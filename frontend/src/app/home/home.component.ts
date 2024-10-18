@@ -4,9 +4,11 @@ import {
   HlmH4Directive,
   HlmPDirective,
 } from '@spartan-ng/ui-typography-helm';
-import { User, UserService } from '../state/user.service';
+import { UserService } from '../state/user.service';
 import { HlmButtonDirective } from '@spartan-ng/ui-button-helm';
 import { RouterLink } from '@angular/router';
+import { users } from '@client';
+import { HeaderComponent } from '../header/header.component';
 
 @Component({
   selector: 'app-home',
@@ -17,12 +19,13 @@ import { RouterLink } from '@angular/router';
     HlmH2Directive,
     HlmH4Directive,
     HlmPDirective,
+    HeaderComponent,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
 export class HomeComponent {
-  user: User | null;
+  user: users.User;
 
   constructor(private userService: UserService) {
     this.user = this.userService.user();
