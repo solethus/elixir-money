@@ -4,6 +4,7 @@ package deposits
 //
 //encore:service
 type Service struct {
+	// Test
 }
 
 // initService is automatically called by Encore when the service starts up.
