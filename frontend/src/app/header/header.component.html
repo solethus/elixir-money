@@ -1,6 +1,7 @@
 <div class="header">
-  @if (showBackButton()) {
-    <button hlmBtn routerLink="/" variant="ghost">
+  @let url = backButtonUrl();
+  @if (url?.length) {
+    <button hlmBtn [routerLink]="url" variant="ghost">
       <hlm-icon name="lucideChevronLeft" />
     </button>
   }

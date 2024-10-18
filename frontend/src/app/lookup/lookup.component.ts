@@ -14,7 +14,7 @@ import {
   HlmCardTitleDirective,
 } from '@spartan-ng/ui-card-helm';
 import { SubmitButtonComponent } from '../submit-button/submit-button.component';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import {
   trigger,
   state,
@@ -24,8 +24,6 @@ import {
 } from '@angular/animations';
 import { HlmButtonDirective } from '@spartan-ng/ui-button-helm';
 import { HlmIconComponent } from '@spartan-ng/ui-icon-helm';
-import { provideIcons } from '@ng-icons/core';
-import { lucideChevronLeft } from '@ng-icons/lucide';
 import { HeaderComponent } from '../header/header.component';
 
 export const fadeIn = trigger('fadeIn', [
@@ -51,7 +49,6 @@ export const fadeIn = trigger('fadeIn', [
     SubmitButtonComponent,
     HeaderComponent,
   ],
-  providers: [provideIcons({ lucideChevronLeft })],
   templateUrl: './lookup.component.html',
   styleUrl: './lookup.component.scss',
   animations: [fadeIn],
@@ -70,10 +67,6 @@ export class LookupComponent {
     this.sendService.clearTargetUser();
     this.targetUser = this.sendService.getTargetUser();
   }
-
-  // +680 555 6789
-  // +44 7911 123456
-  // +27 82 345 6789
 
   flagEmoji = computed(() => {
     const user = this.targetUser();
