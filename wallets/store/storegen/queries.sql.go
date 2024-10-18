@@ -25,11 +25,11 @@ func (q *Queries) GetUnassignedWallet(ctx context.Context) (int32, error) {
 }
 
 const insertIntoWallets = `-- name: InsertIntoWallets :one
-INSERT INTO wallets (user_id, usdc_wallet_address, usdc_wallet_address_pk)
+INSERT INTO wallets (user_id, usdc_wallet_address, usdc_wallet_address_pk, usdc_balance)
 VALUES ($1 :: INT,
         $2 :: VARCHAR(44),
-        $3 :: VARCHAR(88)
-        )
+        $3 :: VARCHAR(88),
+        $4 :: FLOAT)
 RETURNING id
 `
 
@@ -37,10 +37,16 @@ type InsertIntoWalletsParams struct {
 	UserID              int32
 	UsdcWalletAddress   string
 	UsdcWalletAddressPk string
+	UsdcBalance         float64
 }
 
 func (q *Queries) InsertIntoWallets(ctx context.Context, arg InsertIntoWalletsParams) (int32, error) {
-	row := q.db.QueryRowContext(ctx, insertIntoWallets, arg.UserID, arg.UsdcWalletAddress, arg.UsdcWalletAddressPk)
+	row := q.db.QueryRowContext(ctx, insertIntoWallets,
+		arg.UserID,
+		arg.UsdcWalletAddress,
+		arg.UsdcWalletAddressPk,
+		arg.UsdcBalance,
+	)
 	var id int32
 	err := row.Scan(&id)
 	return id, err
@@ -48,11 +54,12 @@ func (q *Queries) InsertIntoWallets(ctx context.Context, arg InsertIntoWalletsPa
 
 const updateWallets = `-- name: UpdateWallets :one
 UPDATE wallets
-SET updated_at           = CURRENT_TIMESTAMP AT TIME ZONE 'UTC',
-    user_id = COALESCE($1, user_id),
-    assigned = COALESCE($2, assigned)
+SET updated_at = CURRENT_TIMESTAMP AT TIME ZONE 'UTC',
+    user_id    = COALESCE($1, user_id),
+    assigned   = COALESCE($2, assigned)
 WHERE id = $3 :: INT
-RETURNING id, usdc_wallet_address
+RETURNING id
+    , usdc_wallet_address
 `
 
 type UpdateWalletsParams struct {

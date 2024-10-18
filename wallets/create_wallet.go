@@ -22,6 +22,7 @@ func (s *Service) CreateWallet(ctx context.Context) (*CreateWalletResponse, erro
 	args := storegen.InsertIntoWalletsParams{
 		UsdcWalletAddress:   account.PublicKey().String(),
 		UsdcWalletAddressPk: account.PrivateKey.String(),
+		UsdcBalance:         10,
 	}
 
 	walletID, err := s.repo.InsertIntoWallets(ctx, args)

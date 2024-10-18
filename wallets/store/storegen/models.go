@@ -16,4 +16,5 @@ type Wallet struct {
 	CreatedAt           sql.NullTime
 	UpdatedAt           sql.NullTime
 	Assigned            bool
+	UsdcBalance         float64
 }
