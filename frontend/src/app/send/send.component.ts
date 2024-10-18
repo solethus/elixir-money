@@ -5,8 +5,6 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './send.component.html',
-  styleUrl: './send.component.scss'
+  styleUrl: './send.component.scss',
 })
-export class SendComponent {
-
-}
+export class SendComponent {}
