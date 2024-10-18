@@ -70,9 +70,9 @@ export namespace payments {
     }
 
     export interface QuoteResponse {
-        "target_currency_amount": number
-        "usdc_amount": number
-        "usdc_fees": number
+        "target_currency_amount": string
+        "usdc_amount": string
+        "usdc_fees": string
     }
 
     export interface SendParams {
