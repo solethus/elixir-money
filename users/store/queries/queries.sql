@@ -10,7 +10,7 @@ VALUES (@first_name :: VARCHAR(255),
         @image_url :: VARCHAR(255))
 RETURNING id;
 
--- name: LookupUserById :one
+-- name: LookupUserByID :one
 SELECT id,
        created_at,
        updated_at,

@@ -6,17 +6,18 @@ package storegen
 
 import (
 	"database/sql"
+	"time"
 )
 
 type User struct {
 	ID                 int32
 	FirstName          string
-	Surname            sql.NullString
-	CountryCode        sql.NullString
-	PhoneNumber        sql.NullString
-	FiatWalletCurrency sql.NullString
+	Surname            string
+	CountryCode        string
+	PhoneNumber        string
+	FiatWalletCurrency string
 	UsdcWalletAddress  sql.NullString
-	UpdatedAt          sql.NullTime
+	UpdatedAt          time.Time
 	ImageUrl           sql.NullString
-	CreatedAt          sql.NullTime
+	CreatedAt          time.Time
 }

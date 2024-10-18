@@ -31,6 +31,7 @@ export function PreviewEnv(pr: number | string): BaseURL {
  */
 export default class Client {
     public readonly payments: payments.ServiceClient
+    public readonly users: users.ServiceClient
 
 
     /**
@@ -42,6 +43,7 @@ export default class Client {
     constructor(target: BaseURL, options?: ClientOptions) {
         const base = new BaseClient(target, options ?? {})
         this.payments = new payments.ServiceClient(base)
+        this.users = new users.ServiceClient(base)
     }
 }
 
@@ -62,7 +64,9 @@ export interface ClientOptions {
 
 export namespace payments {
     export interface CreatePaymentParams {
-        "phone_number": string
+        "target_phone_no": string
+        "sender_phone_no": string
+        "amount_usdc": decimal.Decimal
     }
 
     export interface CreatePaymentResponse {
@@ -80,6 +84,52 @@ export namespace payments {
             const resp = await this.baseClient.callAPI("POST", `/payments.CreatePayment`, JSON.stringify(params))
             return await resp.json() as CreatePaymentResponse
         }
+    }
+}
+
+export namespace users {
+    export interface LookupByPhoneNoParams {
+        UserPhoneNo: string
+    }
+
+    export interface LookupByPhoneNoResponse {
+        user: User
+    }
+
+    export interface User {
+        id: number
+        "first_name": string
+        surname: string
+        "country_code": string
+        "phone_number": string
+        "fiat_wallet_currency": string
+        "usdc_wallet_address": string
+        "image_url": string
+        "created_at": string
+        "updated_at": string
+    }
+
+    export class ServiceClient {
+        private baseClient: BaseClient
+
+        constructor(baseClient: BaseClient) {
+            this.baseClient = baseClient
+        }
+
+        public async LookupByPhoneNo(params: LookupByPhoneNoParams): Promise<LookupByPhoneNoResponse> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callAPI("POST", `/users.LookupByPhoneNo`, JSON.stringify(params))
+            return await resp.json() as LookupByPhoneNoResponse
+        }
+    }
+}
+
+export namespace decimal {
+    /**
+     * Decimal represents a fixed-point decimal. It is immutable.
+     * number = value * 10 ^ exp
+     */
+    export interface Decimal {
     }
 }
 

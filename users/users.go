@@ -1,19 +1,23 @@
 package users
 
-import "encore.dev/storage/sqldb"
+import (
+	"encore.app/users/store/storegen"
+	"encore.dev/storage/sqldb"
+)
 
 // Service struct, learn more: https://encore.dev/docs/primitives/services-and-apis/service-structs
 //
 //encore:service
 type Service struct {
-	// repo storegen.Querier
+	repo storegen.Querier
 }
 
 // initService is automatically called by Encore when the service starts up.
 func initService() (*Service, error) {
+	stdlibDB := db.Stdlib()
+
 	return &Service{
-		// db:             stdlibDB,
-		// repo: storegen.New(stdlibDB),
+		repo: storegen.New(stdlibDB),
 	}, nil
 }
 

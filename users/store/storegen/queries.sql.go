@@ -8,6 +8,7 @@ package storegen
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 const insertIntoUsers = `-- name: InsertIntoUsers :one
@@ -48,7 +49,7 @@ func (q *Queries) InsertIntoUsers(ctx context.Context, arg InsertIntoUsersParams
 	return id, err
 }
 
-const lookupUserById = `-- name: LookupUserById :one
+const lookupUserByID = `-- name: LookupUserByID :one
 SELECT id,
        created_at,
        updated_at,
@@ -63,22 +64,22 @@ FROM users
 WHERE id = $1 :: INT
 `
 
-type LookupUserByIdRow struct {
+type LookupUserByIDRow struct {
 	ID                 int32
-	CreatedAt          sql.NullTime
-	UpdatedAt          sql.NullTime
+	CreatedAt          time.Time
+	UpdatedAt          time.Time
 	FirstName          string
-	Surname            sql.NullString
-	CountryCode        sql.NullString
-	PhoneNumber        sql.NullString
-	FiatWalletCurrency sql.NullString
+	Surname            string
+	CountryCode        string
+	PhoneNumber        string
+	FiatWalletCurrency string
 	UsdcWalletAddress  sql.NullString
 	ImageUrl           sql.NullString
 }
 
-func (q *Queries) LookupUserById(ctx context.Context, id int32) (LookupUserByIdRow, error) {
-	row := q.db.QueryRowContext(ctx, lookupUserById, id)
-	var i LookupUserByIdRow
+func (q *Queries) LookupUserByID(ctx context.Context, id int32) (LookupUserByIDRow, error) {
+	row := q.db.QueryRowContext(ctx, lookupUserByID, id)
+	var i LookupUserByIDRow
 	err := row.Scan(
 		&i.ID,
 		&i.CreatedAt,
@@ -117,13 +118,13 @@ type LookupUserByNameParams struct {
 
 type LookupUserByNameRow struct {
 	ID                 int32
-	CreatedAt          sql.NullTime
-	UpdatedAt          sql.NullTime
+	CreatedAt          time.Time
+	UpdatedAt          time.Time
 	FirstName          string
-	Surname            sql.NullString
-	CountryCode        sql.NullString
-	PhoneNumber        sql.NullString
-	FiatWalletCurrency sql.NullString
+	Surname            string
+	CountryCode        string
+	PhoneNumber        string
+	FiatWalletCurrency string
 	UsdcWalletAddress  sql.NullString
 	ImageUrl           sql.NullString
 }
@@ -163,13 +164,13 @@ WHERE phone_number = $1 :: VARCHAR(20)
 
 type LookupUserByPhoneNumberRow struct {
 	ID                 int32
-	CreatedAt          sql.NullTime
-	UpdatedAt          sql.NullTime
+	CreatedAt          time.Time
+	UpdatedAt          time.Time
 	FirstName          string
-	Surname            sql.NullString
-	CountryCode        sql.NullString
-	PhoneNumber        sql.NullString
-	FiatWalletCurrency sql.NullString
+	Surname            string
+	CountryCode        string
+	PhoneNumber        string
+	FiatWalletCurrency string
 	UsdcWalletAddress  sql.NullString
 	ImageUrl           sql.NullString
 }
@@ -209,13 +210,13 @@ WHERE usdc_wallet_address = $1 :: VARCHAR(44)
 
 type LookupUserByUSDCWalletRow struct {
 	ID                 int32
-	CreatedAt          sql.NullTime
-	UpdatedAt          sql.NullTime
+	CreatedAt          time.Time
+	UpdatedAt          time.Time
 	FirstName          string
-	Surname            sql.NullString
-	CountryCode        sql.NullString
-	PhoneNumber        sql.NullString
-	FiatWalletCurrency sql.NullString
+	Surname            string
+	CountryCode        string
+	PhoneNumber        string
+	FiatWalletCurrency string
 	UsdcWalletAddress  sql.NullString
 	ImageUrl           sql.NullString
 }
