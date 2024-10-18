@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"log"
 
 	"encore.app/users"
 	"encore.dev/beta/errs"
@@ -25,7 +24,6 @@ func (s *Service) Send(ctx context.Context, p *SendParams) (*SendResponse, error
 	sender, err := users.LookupByPhoneNo(ctx, senderLookupParams)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			log.Printf("no entry in the DB for sender '%v'", p.SenderPhoneNo)
 			return nil, errs.Wrap(&errs.Error{Code: errs.NotFound, Message: err.Error()}, "user not found for sender phone no.")
 		}
 		return nil, errs.Wrap(&errs.Error{Code: errs.Unknown, Message: err.Error()}, "error looking up sender")
@@ -35,7 +33,6 @@ func (s *Service) Send(ctx context.Context, p *SendParams) (*SendResponse, error
 	receiver, err := users.LookupByPhoneNo(ctx, receiverLookupParams)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			log.Printf("no entry in the DB for receiver '%v'", p.ReceiverPhoneNo)
 			return nil, errs.Wrap(&errs.Error{Code: errs.NotFound, Message: err.Error()}, "user not found for receiver phone no.")
 		}
 		return nil, errs.Wrap(&errs.Error{Code: errs.Unknown, Message: err.Error()}, "error looking up receiver")

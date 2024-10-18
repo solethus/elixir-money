@@ -4,8 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
+
+	"encore.dev/rlog"
+
+	"encore.dev/beta/errs"
 )
 
 const USDCode = "USD"
@@ -22,38 +25,46 @@ type QuoteResponse struct {
 	USDCFees             float64 `json:"usdc_fees"`
 }
 
+var quoteCache []ExchangeResponse
+
 // Quote takes an amount in any currency, and returns a quote for that amount in USDC, and also a target currency
 //
 //encore:api public
 func (s *Service) Quote(ctx context.Context, p *QuoteParams) (*QuoteResponse, error) {
 	baseCurrency := p.CurrencyCode
 
-	// API endpoint (e.g., from ExchangeRate-API)
-	apiURL := fmt.Sprintf("https://api.exchangerate-api.com/v4/latest/%s", baseCurrency)
+	var quote *ExchangeResponse
+	quote = getQuoteFromCache(baseCurrency)
+	if quote == nil {
+		rlog.Info("quote not found, going to live API")
+		// Get Quote from ExchangeRate-API if we don't have it in cache
+		apiURL := fmt.Sprintf("https://api.exchangerate-api.com/v4/latest/%s", baseCurrency)
 
-	// Make the HTTP request
-	resp, err := http.Get(apiURL)
-	if err != nil {
-		log.Fatalf("Error fetching exchange rates: %v", err)
-	}
-	defer func() { _ = resp.Body.Close() }()
+		// Make the HTTP request
+		resp, err := http.Get(apiURL)
+		if err != nil {
+			return nil, errs.Wrap(&errs.Error{Code: errs.Unknown, Message: err.Error()}, "error fetching exchange rates")
+		}
+		defer func() { _ = resp.Body.Close() }()
 
-	// Decode the JSON response
-	var exchangeResp ExchangeResponse
-	if err := json.NewDecoder(resp.Body).Decode(&exchangeResp); err != nil {
-		log.Fatalf("Error decoding response: %v", err)
+		// Decode the JSON response
+		if err := json.NewDecoder(resp.Body).Decode(&quote); err != nil {
+			return nil, errs.Wrap(&errs.Error{Code: errs.Unknown, Message: err.Error()}, "error decoding response")
+		}
+
+		quoteCache = append(quoteCache, *quote)
 	}
 
 	// Get the rate for the target currency
-	targetRate, ok := exchangeResp.Rates[p.TargetCurrencyCode]
+	targetRate, ok := quote.Rates[p.TargetCurrencyCode]
 	if !ok {
-		log.Fatalf("Conversion rate for %s not found", p.TargetCurrencyCode)
+		return nil, &errs.Error{Code: errs.Unknown, Message: fmt.Sprintf("conversion rate for %s not found", p.TargetCurrencyCode)}
 	}
 
 	// Get the rate for the target currency
-	usdcRate, ok := exchangeResp.Rates[USDCode]
+	usdcRate, ok := quote.Rates[USDCode]
 	if !ok {
-		log.Fatalf("Conversion rate for %s not found", p.TargetCurrencyCode)
+		return nil, &errs.Error{Code: errs.Unknown, Message: fmt.Sprintf("conversion rate for %s not found", USDCode)}
 	}
 
 	// Example usage of the conversion rate
@@ -66,6 +77,21 @@ func (s *Service) Quote(ctx context.Context, p *QuoteParams) (*QuoteResponse, er
 		USDCFees:             0.0,
 	}
 	return res, nil
+}
+
+func getQuoteFromCache(baseCurrency string) *ExchangeResponse {
+	for _, r := range quoteCache {
+		if r.Base == baseCurrency {
+			rlog.Info("got quote for from cache",
+				"baseCurrency", baseCurrency)
+			return &r
+		}
+	}
+	return nil
+}
+
+type cachedAmounts struct {
+	ExchangeResponses []ExchangeResponse
 }
 
 type ExchangeResponse struct {

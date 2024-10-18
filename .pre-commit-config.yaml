@@ -13,7 +13,7 @@ repos:
       - id: go-vet-repo-mod
 
       # Formatters
-      - id: go-imports
+      - id: go-imports # go install golang.org/x/tools/cmd/goimports@latest
       - id: go-fumpt   # install with `go install mvdan.cc/gofumpt@latest`
         args: [ "-w" ]
 

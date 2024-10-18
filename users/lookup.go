@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"log"
 
 	"encore.dev/beta/errs"
 )
@@ -22,7 +21,6 @@ func (s *Service) LookupByPhoneNo(ctx context.Context, p *LookupByPhoneNoParams)
 	user, err := s.repo.LookupUserByPhoneNumber(ctx, p.UserPhoneNo)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			log.Printf("no entry in the DB for '%v'", p.UserPhoneNo)
 			return nil, errs.Wrap(&errs.Error{Code: errs.NotFound, Message: err.Error()}, "user not found for phone no.")
 		}
 		return nil, errs.Wrap(&errs.Error{Code: errs.Unknown, Message: err.Error()}, "error looking up user")
