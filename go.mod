@@ -2,7 +2,10 @@ module encore.app
 
 go 1.23.0
 
-require encore.dev v1.41.9
+require (
+	encore.dev v1.41.9
+	github.com/shopspring/decimal v1.4.0
+)
 
 require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
