@@ -161,6 +161,12 @@ encore secrets list secretNameFromCallAbove
 ```
 (secret _values_ have to be viewed from Encore settings)
 
+### GoLand Plugin
+
+https://plugins.jetbrains.com/plugin/20010-encore
+
+- Can type `newapi` to generate a new API endpoint
+
 ## Deployment
 
 Deployments are synced with the GitHub repo, so when new commits are pushed to main, they will be auto-deployed.
