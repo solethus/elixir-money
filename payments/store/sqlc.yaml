@@ -7,6 +7,5 @@ sql:
       go:
         package: storegen
         out: storegen
-#        sql_package: "pgx/v5"
         sql_package: "database/sql"
         emit_interface: true
