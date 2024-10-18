@@ -15,6 +15,7 @@ var fixtures string
 
 func init() {
 	if encore.Meta().Environment.Cloud == encore.CloudLocal {
+		// TODO: Add unique constraint on DB, so we don't insert every time
 		if _, err := db.Exec(context.Background(), fixtures); err != nil {
 			// Fixtures might already be inserted
 			if sqldb.ErrCode(err) != sqlerr.UniqueViolation {
