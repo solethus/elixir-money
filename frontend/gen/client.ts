@@ -30,6 +30,7 @@ export function PreviewEnv(pr: number | string): BaseURL {
  * Client is an API client for the elixir-money-73o2 Encore application.
  */
 export default class Client {
+    public readonly payments: payments.ServiceClient
 
 
     /**
@@ -40,6 +41,7 @@ export default class Client {
      */
     constructor(target: BaseURL, options?: ClientOptions) {
         const base = new BaseClient(target, options ?? {})
+        this.payments = new payments.ServiceClient(base)
     }
 }
 
@@ -56,6 +58,29 @@ export interface ClientOptions {
 
     /** Default RequestInit to be used for the client */
     requestInit?: Omit<RequestInit, "headers"> & { headers?: Record<string, string> }
+}
+
+export namespace payments {
+    export interface CreatePaymentParams {
+        "phone_number": string
+    }
+
+    export interface CreatePaymentResponse {
+    }
+
+    export class ServiceClient {
+        private baseClient: BaseClient
+
+        constructor(baseClient: BaseClient) {
+            this.baseClient = baseClient
+        }
+
+        public async CreatePayment(params: CreatePaymentParams): Promise<CreatePaymentResponse> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callAPI("POST", `/payments.CreatePayment`, JSON.stringify(params))
+            return await resp.json() as CreatePaymentResponse
+        }
+    }
 }
 
 
