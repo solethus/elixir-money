@@ -62,6 +62,7 @@ tasks:
     deps:
       - sqlc-gen-usr
       - sqlc-gen-pay
+      - sqlc-gen-wal
 
   sqlc-gen-usr:
     dir: users/store
@@ -70,6 +71,11 @@ tasks:
 
   sqlc-gen-pay:
     dir: payments/store
+    cmds:
+      - sqlc generate
+
+  sqlc-gen-wal:
+    dir: wallets/store
     cmds:
       - sqlc generate
 
