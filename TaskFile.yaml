@@ -54,7 +54,7 @@ tasks:
   gen-ts:
     desc:  Generates an ts API client
     cmds:
-      - encore gen client --env=local --output=fe/gen/client.ts
+      - encore gen client --env=local --output=frontend/gen/client.ts
 
   ## SQL generation
   sqlc-gen:
@@ -72,3 +72,24 @@ tasks:
     dir: payments/store
     cmds:
       - sqlc generate
+
+ # DB
+  db-local-str:
+    desc: Get local DB connection string for given DB, e.g. 'task db-local-str -- users'
+    cmds:
+      - encore db conn-uri {{.CLI_ARGS}} --env=local
+
+  db-stg-str:
+    desc: Get staging DB connection string for given DB, e.g. 'task db-stg-str -- payments'
+    cmds:
+      - encore db conn-uri {{.CLI_ARGS}} --env=staging
+
+  db-local-she:
+    desc: Start a shell for given local DB,  e.g. 'task db-local-she -- wallets'
+    cmds:
+      - encore db shell {{.CLI_ARGS}} --env=local
+
+  db-stg-she:
+    desc: Start a shell for given staging DB,  e.g. 'task db-stg-she -- users'
+    cmds:
+      - encore db shell {{.CLI_ARGS}} --env=staging
