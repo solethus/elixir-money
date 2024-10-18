@@ -18,6 +18,7 @@ type LookupByPhoneNoResponse struct {
 
 //encore:api public
 func (s *Service) LookupByPhoneNo(ctx context.Context, p *LookupByPhoneNoParams) (*LookupByPhoneNoResponse, error) {
+	// TODO: Remove spaces from phone number, update DB to not have spaces
 	user, err := s.repo.LookupUserByPhoneNumber(ctx, p.UserPhoneNo)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

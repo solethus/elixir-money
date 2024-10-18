@@ -7,6 +7,7 @@ package storegen
 
 import (
 	"context"
+	"database/sql"
 )
 
 const getUnassignedWallet = `-- name: GetUnassignedWallet :one
@@ -50,6 +51,69 @@ func (q *Queries) InsertIntoWallets(ctx context.Context, arg InsertIntoWalletsPa
 	var id int32
 	err := row.Scan(&id)
 	return id, err
+}
+
+const lookupWallet = `-- name: LookupWallet :one
+SELECT id, user_id, usdc_wallet_address, usdc_wallet_address_pk, usdc_balance, created_at, updated_at, assigned
+FROM wallets
+WHERE user_id = $1
+`
+
+type LookupWalletRow struct {
+	ID                  int32
+	UserID              int32
+	UsdcWalletAddress   string
+	UsdcWalletAddressPk string
+	UsdcBalance         float64
+	CreatedAt           sql.NullTime
+	UpdatedAt           sql.NullTime
+	Assigned            bool
+}
+
+func (q *Queries) LookupWallet(ctx context.Context, userID int32) (LookupWalletRow, error) {
+	row := q.db.QueryRowContext(ctx, lookupWallet, userID)
+	var i LookupWalletRow
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.UsdcWalletAddress,
+		&i.UsdcWalletAddressPk,
+		&i.UsdcBalance,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Assigned,
+	)
+	return i, err
+}
+
+const lookupWalletBalance = `-- name: LookupWalletBalance :one
+SELECT usdc_balance
+FROM wallets
+WHERE user_id = $1
+`
+
+func (q *Queries) LookupWalletBalance(ctx context.Context, userID int32) (float64, error) {
+	row := q.db.QueryRowContext(ctx, lookupWalletBalance, userID)
+	var usdc_balance float64
+	err := row.Scan(&usdc_balance)
+	return usdc_balance, err
+}
+
+const updateWalletBalance = `-- name: UpdateWalletBalance :exec
+UPDATE wallets
+SET usdc_balance = $1,
+    updated_at = CURRENT_TIMESTAMP
+WHERE user_id = $2
+`
+
+type UpdateWalletBalanceParams struct {
+	UsdcBalance float64
+	UserID      int32
+}
+
+func (q *Queries) UpdateWalletBalance(ctx context.Context, arg UpdateWalletBalanceParams) error {
+	_, err := q.db.ExecContext(ctx, updateWalletBalance, arg.UsdcBalance, arg.UserID)
+	return err
 }
 
 const updateWallets = `-- name: UpdateWallets :one

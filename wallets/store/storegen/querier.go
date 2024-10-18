@@ -11,6 +11,9 @@ import (
 type Querier interface {
 	GetUnassignedWallet(ctx context.Context) (int32, error)
 	InsertIntoWallets(ctx context.Context, arg InsertIntoWalletsParams) (int32, error)
+	LookupWallet(ctx context.Context, userID int32) (LookupWalletRow, error)
+	LookupWalletBalance(ctx context.Context, userID int32) (float64, error)
+	UpdateWalletBalance(ctx context.Context, arg UpdateWalletBalanceParams) error
 	UpdateWallets(ctx context.Context, arg UpdateWalletsParams) (UpdateWalletsRow, error)
 }
 

@@ -1,6 +1,8 @@
 package wallets
 
 import (
+	"database/sql"
+
 	"encore.app/wallets/store/storegen"
 	"encore.dev/storage/sqldb"
 )
@@ -9,6 +11,7 @@ import (
 //
 //encore:service
 type Service struct {
+	db   *sql.DB
 	repo storegen.Querier
 }
 
@@ -16,6 +19,7 @@ type Service struct {
 func initService() (*Service, error) {
 	stdlibDB := db.Stdlib()
 	return &Service{
+		db:   stdlibDB,
 		repo: storegen.New(stdlibDB),
 	}, nil
 }

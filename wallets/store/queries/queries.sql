@@ -22,3 +22,19 @@ SET updated_at = CURRENT_TIMESTAMP AT TIME ZONE 'UTC',
 WHERE id = @id :: INT
 RETURNING id
     , usdc_wallet_address;
+
+-- name: UpdateWalletBalance :exec
+UPDATE wallets
+SET usdc_balance = $1,
+    updated_at = CURRENT_TIMESTAMP
+WHERE user_id = $2;
+
+-- name: LookupWalletBalance :one
+SELECT usdc_balance
+FROM wallets
+WHERE user_id = $1;
+
+-- name: LookupWallet :one
+SELECT id, user_id, usdc_wallet_address, usdc_wallet_address_pk, usdc_balance, created_at, updated_at, assigned
+FROM wallets
+WHERE user_id = $1;
