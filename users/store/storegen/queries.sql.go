@@ -253,10 +253,10 @@ RETURNING id
 `
 
 type UpdateUserParams struct {
-	FirstName          sql.NullString
-	Surname            sql.NullString
-	PhoneNumber        sql.NullString
-	FiatWalletCurrency sql.NullString
+	FirstName          string
+	Surname            string
+	PhoneNumber        string
+	FiatWalletCurrency string
 	UsdcWalletAddress  sql.NullString
 	ImageUrl           sql.NullString
 	ID                 int32

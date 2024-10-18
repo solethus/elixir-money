@@ -70,11 +70,11 @@ WHERE usdc_wallet_address = @usdc_wallet_address :: VARCHAR(44);
 -- name: UpdateUser :exec
 UPDATE users
 SET updated_at           = CURRENT_TIMESTAMP AT TIME ZONE 'UTC',
-    first_name           = COALESCE(sqlc.narg('first_name'), first_name),
-    surname              = COALESCE(sqlc.narg('surname'), surname),
-    phone_number         = COALESCE(sqlc.narg('phone_number'), phone_number),
-    fiat_wallet_currency = COALESCE(sqlc.narg('fiat_wallet_currency'), fiat_wallet_currency),
+    first_name           = COALESCE(sqlc.arg('first_name'), first_name),
+    surname              = COALESCE(sqlc.arg('surname'), surname),
+    phone_number         = COALESCE(sqlc.arg('phone_number'), phone_number),
+    fiat_wallet_currency = COALESCE(sqlc.arg('fiat_wallet_currency'), fiat_wallet_currency),
     usdc_wallet_address  = COALESCE(sqlc.narg('usdc_wallet_address'), usdc_wallet_address),
-    image_url            = COALESCE(sqlc.narg('image_url'), image_url)
+    image_url            = COALESCE(sqlc.arg('image_url'), image_url)
 WHERE id = @id :: INT
 RETURNING id;

@@ -16,7 +16,7 @@ type AssignWalletResponse struct {
 // AssignWallet creates a wallet
 //
 //encore:api method=POST path=/wallets/assign
-func (s *Service) AssignWallet(ctx context.Context, event *users.WalletEvent) error {
+func (s *Service) AssignWallet(ctx context.Context, event *users.RequestWalletEvent) error {
 	walletID, err := s.repo.GetUnassignedWallet(ctx)
 	if err != nil {
 		return err
@@ -33,17 +33,15 @@ func (s *Service) AssignWallet(ctx context.Context, event *users.WalletEvent) er
 		return err
 	}
 
-	_, err = AssignWalletTopic.Publish(ctx, &AssignWalletEvent{
-		UserID:        event.UserID,
-		WalletAddress: update.UsdcWalletAddress,
-	})
+	err = users.AssignWallet(ctx, &users.AssignWalletRequest{UserID: event.UserID, WalletAddress: update.UsdcWalletAddress})
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
 // This uses a Pub/Sub subscription, learn more: https://encore.dev/docs/primitives/pubsub
-var _ = pubsub.NewSubscription(users.RequestWalletTopic, "slack-notification", pubsub.SubscriptionConfig[*users.WalletEvent]{
+var _ = pubsub.NewSubscription(users.RequestWalletTopic, "request-wallet", pubsub.SubscriptionConfig[*users.RequestWalletEvent]{
 	Handler: pubsub.MethodHandler((*Service).AssignWallet),
 })

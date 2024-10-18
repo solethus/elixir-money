@@ -7,15 +7,15 @@ import (
 	"github.com/gagliardetto/solana-go"
 )
 
-type CreateWalletResponse struct {
+type CreateResponse struct {
 	WalletID          int32  `json:"wallet_id"`
 	UsdcWalletAddress string `json:"usdc_wallet_address"`
 }
 
-// CreateWallet creates a wallet
+// Create creates a wallet
 //
 //encore:api method=POST path=/wallets/create
-func (s *Service) CreateWallet(ctx context.Context) (*CreateWalletResponse, error) {
+func (s *Service) Create(ctx context.Context) (*CreateResponse, error) {
 	// Create a new account:
 	account := solana.NewWallet()
 
@@ -30,7 +30,7 @@ func (s *Service) CreateWallet(ctx context.Context) (*CreateWalletResponse, erro
 		return nil, err
 	}
 
-	return &CreateWalletResponse{
+	return &CreateResponse{
 		WalletID:          walletID,
 		UsdcWalletAddress: account.PublicKey().String(),
 	}, nil
