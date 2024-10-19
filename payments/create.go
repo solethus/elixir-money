@@ -29,6 +29,7 @@ func (s *Service) Send(ctx context.Context, p *SendParams) (*SendResponse, error
 
 	senderLookupParams := &users.LookupByPhoneNoParams{UserPhoneNo: p.SenderPhoneNo}
 
+	// The LookupByPhoneNo function removes spaces before searching, so we don't have to do that here
 	senderResponse, err := users.LookupByPhoneNo(ctx, senderLookupParams)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"strings"
 
 	"encore.dev/beta/errs"
 )
@@ -18,8 +19,8 @@ type LookupByPhoneNoResponse struct {
 
 //encore:api public path=/users/lookup
 func (s *Service) LookupByPhoneNo(ctx context.Context, p *LookupByPhoneNoParams) (*LookupByPhoneNoResponse, error) {
-	// TODO: Remove spaces from phone number, update DB to not have spaces
-	user, err := s.repo.LookupUserByPhoneNumber(ctx, p.UserPhoneNo)
+	userPhoneNo := strings.ReplaceAll(p.UserPhoneNo, " ", "")
+	user, err := s.repo.LookupUserByPhoneNumber(ctx, userPhoneNo)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, errs.Wrap(&errs.Error{Code: errs.NotFound, Message: err.Error()}, "user not found for phone no.")
