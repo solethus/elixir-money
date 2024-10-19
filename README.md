@@ -1,5 +1,24 @@
 # Elixir Money
 
+## Architecture
+
+```mermaid
+sequenceDiagram
+participant Magnus as Magnus (Sender)
+participant Server as Server
+participant Opus as Opus (Receiver)
+
+Magnus->>Server: Deposits £10
+Server-->>Magnus: Converts to $13.05 USDC
+Magnus->>Server: Create send request for R230
+Server-->>Magnus: Shows quote in USDC + GBP
+Magnus->>Opus: Sends $13.05 USDC via blockchain
+Opus->>Server: Withdraw funds
+Server-->>Opus: Convert to R228.54
+```
+
+[//]: # (TODO: Do we want withdraw step above? Or is it better to be simpler?)
+
 ## Dependencies
 
 ### Pre-commit hooks
