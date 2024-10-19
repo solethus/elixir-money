@@ -30,9 +30,11 @@ export function PreviewEnv(pr: number | string): BaseURL {
  * Client is an API client for the elixir-money-73o2 Encore application.
  */
 export default class Client {
+    public readonly deposits: deposits.ServiceClient
     public readonly frontend: frontend.ServiceClient
     public readonly payments: payments.ServiceClient
     public readonly users: users.ServiceClient
+    public readonly withdrawals: withdrawals.ServiceClient
 
 
     /**
@@ -43,9 +45,11 @@ export default class Client {
      */
     constructor(target: BaseURL, options?: ClientOptions) {
         const base = new BaseClient(target, options ?? {})
+        this.deposits = new deposits.ServiceClient(base)
         this.frontend = new frontend.ServiceClient(base)
         this.payments = new payments.ServiceClient(base)
         this.users = new users.ServiceClient(base)
+        this.withdrawals = new withdrawals.ServiceClient(base)
     }
 }
 
@@ -62,6 +66,28 @@ export interface ClientOptions {
 
     /** Default RequestInit to be used for the client */
     requestInit?: Omit<RequestInit, "headers"> & { headers?: Record<string, string> }
+}
+
+export namespace deposits {
+    export interface CreateParams {
+    }
+
+    export interface CreateResponse {
+    }
+
+    export class ServiceClient {
+        private baseClient: BaseClient
+
+        constructor(baseClient: BaseClient) {
+            this.baseClient = baseClient
+        }
+
+        public async Create(params: CreateParams): Promise<CreateResponse> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callAPI("POST", `/deposits/create`)
+            return await resp.json() as CreateResponse
+        }
+    }
 }
 
 export namespace frontend {
@@ -194,6 +220,28 @@ export namespace users {
             // Now make the actual call to the API
             const resp = await this.baseClient.callAPI("POST", `/users/lookup`, JSON.stringify(params))
             return await resp.json() as LookupByPhoneNoResponse
+        }
+    }
+}
+
+export namespace withdrawals {
+    export interface CreateParams {
+    }
+
+    export interface CreateResponse {
+    }
+
+    export class ServiceClient {
+        private baseClient: BaseClient
+
+        constructor(baseClient: BaseClient) {
+            this.baseClient = baseClient
+        }
+
+        public async Create(params: CreateParams): Promise<CreateResponse> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callAPI("POST", `/withdrawals/create`)
+            return await resp.json() as CreateResponse
         }
     }
 }
