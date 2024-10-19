@@ -30,6 +30,7 @@ export function PreviewEnv(pr: number | string): BaseURL {
  * Client is an API client for the elixir-money-73o2 Encore application.
  */
 export default class Client {
+    public readonly frontend: frontend.ServiceClient
     public readonly payments: payments.ServiceClient
     public readonly users: users.ServiceClient
 
@@ -42,6 +43,7 @@ export default class Client {
      */
     constructor(target: BaseURL, options?: ClientOptions) {
         const base = new BaseClient(target, options ?? {})
+        this.frontend = new frontend.ServiceClient(base)
         this.payments = new payments.ServiceClient(base)
         this.users = new users.ServiceClient(base)
     }
@@ -60,6 +62,26 @@ export interface ClientOptions {
 
     /** Default RequestInit to be used for the client */
     requestInit?: Omit<RequestInit, "headers"> & { headers?: Record<string, string> }
+}
+
+export namespace frontend {
+
+    export class ServiceClient {
+        private baseClient: BaseClient
+
+        constructor(baseClient: BaseClient) {
+            this.baseClient = baseClient
+        }
+
+        /**
+         * Serve serves the frontend for development.
+         * For production use we recommend deploying the frontend
+         * using Vercel, Netlify, or similar.
+         */
+        public async Serve(method: string, path: string[], body?: BodyInit, options?: CallParameters): Promise<Response> {
+            return this.baseClient.callAPI(method, `/frontend/${path.map(encodeURIComponent).join("/")}`, body, options)
+        }
+    }
 }
 
 export namespace payments {
@@ -98,13 +120,13 @@ export namespace payments {
          */
         public async Quote(params: QuoteParams): Promise<QuoteResponse> {
             // Now make the actual call to the API
-            const resp = await this.baseClient.callAPI("POST", `/payments.Quote`, JSON.stringify(params))
+            const resp = await this.baseClient.callAPI("POST", `/payments/quote`, JSON.stringify(params))
             return await resp.json() as QuoteResponse
         }
 
         public async Send(params: SendParams): Promise<SendResponse> {
             // Now make the actual call to the API
-            const resp = await this.baseClient.callAPI("POST", `/payments.Send`, JSON.stringify(params))
+            const resp = await this.baseClient.callAPI("POST", `/payments/send`, JSON.stringify(params))
             return await resp.json() as SendResponse
         }
     }
@@ -164,13 +186,13 @@ export namespace users {
          */
         public async Create(params: CreateRequest): Promise<CreateResponse> {
             // Now make the actual call to the API
-            const resp = await this.baseClient.callAPI("POST", `/user/create`, JSON.stringify(params))
+            const resp = await this.baseClient.callAPI("POST", `/users/create`, JSON.stringify(params))
             return await resp.json() as CreateResponse
         }
 
         public async LookupByPhoneNo(params: LookupByPhoneNoParams): Promise<LookupByPhoneNoResponse> {
             // Now make the actual call to the API
-            const resp = await this.baseClient.callAPI("POST", `/users.LookupByPhoneNo`, JSON.stringify(params))
+            const resp = await this.baseClient.callAPI("POST", `/users/lookup`, JSON.stringify(params))
             return await resp.json() as LookupByPhoneNoResponse
         }
     }
