@@ -16,7 +16,7 @@ type LookupByPhoneNoResponse struct {
 	User User `json:"user"`
 }
 
-//encore:api public
+//encore:api public path=/users/lookup
 func (s *Service) LookupByPhoneNo(ctx context.Context, p *LookupByPhoneNoParams) (*LookupByPhoneNoResponse, error) {
 	// TODO: Remove spaces from phone number, update DB to not have spaces
 	user, err := s.repo.LookupUserByPhoneNumber(ctx, p.UserPhoneNo)

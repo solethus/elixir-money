@@ -14,7 +14,7 @@ type AssignWalletRequest struct {
 
 // AssignWallet creates a user
 //
-//encore:api method=POST path=/user/assign_wallet
+//encore:api method=POST path=/users/assign-wallet
 func (s *Service) AssignWallet(ctx context.Context, req *AssignWalletRequest) error {
 	userByID, err := s.repo.LookupUserByID(ctx, req.UserID)
 	if err != nil {

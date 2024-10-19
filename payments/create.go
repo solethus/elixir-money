@@ -21,7 +21,7 @@ type SendResponse struct {
 	ReceiverBalance float64 `json:"receiver_balance"`
 }
 
-//encore:api public
+//encore:api public path=/payments/send
 func (s *Service) Send(ctx context.Context, p *SendParams) (*SendResponse, error) {
 	if p.AmountUSDC <= 0 {
 		return nil, &errs.Error{Code: errs.InvalidArgument, Message: "amount must be greater than 0"}

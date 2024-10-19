@@ -20,7 +20,7 @@ type UpdateWalletBalancesResponse struct {
 
 // UpdateWalletBalances makes a transfer between wallets, but only commits once confirmed it can happen.
 //
-//encore:api private
+//encore:api private path=/wallets/update-balance
 func (s *Service) UpdateWalletBalances(ctx context.Context, p *UpdateWalletBalancesParams) (*UpdateWalletBalancesResponse, error) {
 	tx, err := s.db.Begin()
 	if err != nil {

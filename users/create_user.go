@@ -28,7 +28,7 @@ type CreateResponse struct {
 
 // Create creates a user
 //
-//encore:api public method=POST path=/user/create
+//encore:api public method=POST path=/users/create
 func (s *Service) Create(ctx context.Context, req *CreateRequest) (*CreateResponse, error) {
 	args := storegen.InsertIntoUsersParams{
 		FirstName:          req.FirstName,

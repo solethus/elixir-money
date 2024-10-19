@@ -29,7 +29,7 @@ var quoteCache []ExchangeResponse
 
 // Quote takes an amount in any currency, and returns a quote for that amount in USDC, and also a target currency
 //
-//encore:api public
+//encore:api public path=/payments/quote
 func (s *Service) Quote(ctx context.Context, p *QuoteParams) (*QuoteResponse, error) {
 	baseCurrency := p.CurrencyCode
 
