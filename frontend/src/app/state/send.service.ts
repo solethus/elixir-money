@@ -1,5 +1,10 @@
 import { Injectable, signal } from '@angular/core';
-import Client, { Local, Environment, users, payments } from '@client';
+import Client, { Local, users, payments } from '@client';
+
+export type QuoteDetails = payments.QuoteResponse & {
+  amount: number;
+  amountCurrency: string;
+};
 
 @Injectable({
   providedIn: 'root',
@@ -21,13 +26,13 @@ export class SendService {
     this.targetUser.set(null);
   }
 
-  private quote = signal<payments.QuoteResponse | null>(null);
+  private quote = signal<QuoteDetails | null>(null);
 
   getQuote() {
     return this.quote.asReadonly();
   }
 
-  setQuote(quote: payments.QuoteResponse) {
+  setQuote(quote: QuoteDetails) {
     this.quote.set(quote);
   }
 
@@ -56,15 +61,11 @@ export class SendService {
     return response.user;
   }
 
-  async generateQuote(
-    amount: number,
-    currencyCode: string,
-    targetCurrencyCode: string,
-  ) {
+  async generateQuote(amount: number, base: string, counter: string) {
     const response = await this.client.payments.Quote({
       amount,
-      currency_code: currencyCode,
-      target_currency_code: targetCurrencyCode,
+      currency_code: base,
+      secondary_currency_code: counter,
     });
     return response;
   }

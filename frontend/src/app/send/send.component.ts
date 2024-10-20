@@ -105,14 +105,36 @@ export class SendComponent {
 
     this.loading.set(true);
 
+    let baseCurrency: 'mine' | 'theirs' | 'other';
+    let base: string;
+    let counter: string;
+
+    if (this.user().fiat_wallet_currency !== this.currencyCode()) {
+      baseCurrency = 'theirs';
+      base = this.user().fiat_wallet_currency;
+      counter = this.targetUser().fiat_wallet_currency;
+    } else if (this.user().fiat_wallet_currency === this.currencyCode()) {
+      baseCurrency = 'mine';
+      base = this.targetUser().fiat_wallet_currency;
+      counter = this.user().fiat_wallet_currency;
+    } else {
+      baseCurrency = 'other';
+      base = this.currencyCode();
+      counter = this.user().fiat_wallet_currency;
+    }
+
     try {
       const quote = await this.sendService.generateQuote(
-        this.amountControl.value,
-        this.user().fiat_wallet_currency,
-        this.targetUser().fiat_wallet_currency,
+        amount,
+        // Make this configurable, based on the user currency selection.
+        base,
+        counter,
       );
-      this.sendService.setQuote(quote);
-      this.sendService.setAmount(this.amountControl.value);
+      this.sendService.setQuote({
+        ...quote,
+        amount,
+        amountCurrency: base,
+      });
       this.router.navigate(['/confirm']);
     } catch (error) {
     } finally {
