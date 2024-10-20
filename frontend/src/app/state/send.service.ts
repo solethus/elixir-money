@@ -8,7 +8,6 @@ export class SendService {
   private client = new Client(Local);
 
   private targetUser = signal<users.User | null>(null);
-  private quote = signal<payments.QuoteResponse | null>(null);
 
   getTargetUser() {
     return this.targetUser.asReadonly();
@@ -22,6 +21,8 @@ export class SendService {
     this.targetUser.set(null);
   }
 
+  private quote = signal<payments.QuoteResponse | null>(null);
+
   getQuote() {
     return this.quote.asReadonly();
   }
@@ -31,6 +32,20 @@ export class SendService {
   }
 
   clearQuote() {
+    this.quote.set(null);
+  }
+
+  private amount = signal<number | null>(null);
+
+  getAmount() {
+    return this.amount.asReadonly();
+  }
+
+  setAmount(amount: number) {
+    this.amount.set(amount);
+  }
+
+  clearAmount() {
     this.quote.set(null);
   }
 
@@ -54,7 +69,7 @@ export class SendService {
     return response;
   }
 
-  async approveQuote(
+  async acceptQuote(
     sourcePhoneNumber: string,
     targetPhoneNumber: string,
     amount: number,

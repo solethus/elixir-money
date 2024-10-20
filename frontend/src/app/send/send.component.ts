@@ -97,6 +97,7 @@ export class SendComponent {
         this.targetUser().fiat_wallet_currency,
       );
       this.sendService.setQuote(quote);
+      this.sendService.setAmount(this.amountControl.value);
       this.router.navigate(['/confirm']);
     } catch (error) {
     } finally {
