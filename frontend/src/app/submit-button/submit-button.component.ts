@@ -22,6 +22,7 @@ export class SubmitButtonComponent {
   loading = input(false);
 
   submitIcon = input<'lucideSend' | 'lucideArrowRight'>('lucideArrowRight');
+  submitText = input<'Next' | 'Send'>('Next');
 
   clicked = output();
 }
