@@ -54,7 +54,10 @@
       ],
       "@spartan-ng/ui-popover-helm": [
         "./libs/ui/ui-popover-helm/src/index.ts"
-      ]
+      ],
+      "@spartan-ng/ui-combobox-helm": [
+        "./libs/ui/ui-combobox-helm/index.ts"
+      ],
     }
   },
   "angularCompilerOptions": {
