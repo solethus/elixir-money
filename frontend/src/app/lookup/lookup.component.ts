@@ -77,6 +77,10 @@ export class LookupComponent {
   ) {
     this.sendService.clearTargetUser();
     this.targetUser = this.sendService.getTargetUser();
+
+    // TODO remove this default value
+    this.phoneNumberGroup.controls.phoneNumber.setValue('+447911123456');
+    this.lookupPhoneNo();
   }
 
   flagEmoji = computed(() => {
