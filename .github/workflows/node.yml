@@ -33,5 +33,5 @@ jobs:
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: frontend/dist/angular_app/browser  # Adjust this path according to your Angular output directory
+          folder: frontend/dist/elixir/browser  # Adjust this path according to your Angular output directory
           branch: gh-pages
