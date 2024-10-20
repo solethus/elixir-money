@@ -58,6 +58,9 @@
       "@spartan-ng/ui-combobox-helm": [
         "./libs/ui/ui-combobox-helm/index.ts"
       ],
+      "@spartan-ng/ui-select-helm": [
+        "./libs/ui/ui-select-helm/src/index.ts"
+      ]
     }
   },
   "angularCompilerOptions": {
