@@ -28,4 +28,4 @@ jobs:
       - name: Install, Build and deploy 📦🔧🚀
         run: |
           npm ci
-          ng deploy
+          npm run deploy
