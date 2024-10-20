@@ -22,6 +22,7 @@
     "@angular/router": "^18.2.0",
     "@ng-icons/core": "^25.1.0",
     "@ng-icons/lucide": "^25.1.0",
+    "@ngxpert/cmdk": "^1.0.0",
     "@spartan-ng/ui-command-brain": "0.0.1-alpha.356",
     "@spartan-ng/ui-core": "^0.0.1-alpha.356",
     "@spartan-ng/ui-dialog-brain": "0.0.1-alpha.356",
