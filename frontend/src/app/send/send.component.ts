@@ -13,7 +13,7 @@ import { SubmitButtonComponent } from '../submit-button/submit-button.component'
 import { SendService } from '../state/send.service';
 import { users } from '@client';
 import { UserService } from '../state/user.service';
-import { getCurrencySymbol } from '@angular/common';
+import { getCurrencySymbol } from '../utils/get-currency-symbol';
 
 @Component({
   selector: 'app-send',
@@ -68,13 +68,7 @@ export class SendComponent {
 
     this.currencyMaskConfig = computed<Partial<NgxCurrencyConfig>>(() => {
       const currency = this.currencyCode();
-
-      const symbol = Intl.NumberFormat('en', {
-        style: 'currency',
-        currency,
-      })
-        .formatToParts()
-        .find((part) => part.type === 'currency')!.value;
+      const symbol = getCurrencySymbol(currency);
 
       return {
         allowNegative: false,
