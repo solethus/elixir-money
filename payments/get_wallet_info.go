@@ -11,7 +11,7 @@ type WalletResponse struct {
 	// Currency of the logged-in user
 	Currency string `json:"currency"`
 	// Balance of the logged-in user
-	Balance string `json:"balance"`
+	Balance float64 `json:"balance"`
 }
 
 // GetWallet returns the wallet information

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math"
 	"net/http"
 
 	"encore.dev/rlog"
@@ -16,13 +17,13 @@ const USDCode = "USD"
 type QuoteParams struct {
 	CurrencyCode       string  `json:"currency_code"`
 	Amount             float64 `json:"amount"`
-	TargetCurrencyCode string  `json:"target_currency_code"`
+	TargetCurrencyCode string  `json:"secondary_currency_code"` // Other currency to get the quote in, aside from USDC.
 }
 
 type QuoteResponse struct {
-	SecondaryCurrencyQuote string `json:"secondary_currency_quote"` // Won't actually be used in the send, just for information purposes to show to user
-	USDCAmount             string `json:"usdc_amount"`
-	USDCFees               string `json:"usdc_fees"`
+	SecondaryCurrencyQuote float64 `json:"secondary_currency_quote"` // Won't actually be used in the send, just for information purposes to show to user.
+	USDCAmount             float64 `json:"usdc_amount"`
+	USDCFees               float64 `json:"usdc_fees"`
 }
 
 var quoteCache []ExchangeResponse
@@ -72,11 +73,16 @@ func (s *Service) Quote(ctx context.Context, p *QuoteParams) (*QuoteResponse, er
 	usdcConvertedAmount := p.Amount * usdcRate
 
 	res := &QuoteResponse{
-		SecondaryCurrencyQuote: fmt.Sprintf("%.2f", targetConvertedAmount),
-		USDCAmount:             fmt.Sprintf("%.2f", usdcConvertedAmount),
-		USDCFees:               "0.0",
+		SecondaryCurrencyQuote: truncateToTwoDecimals(targetConvertedAmount),
+		USDCAmount:             truncateToTwoDecimals(usdcConvertedAmount),
+		USDCFees:               0.00,
 	}
 	return res, nil
+}
+
+func truncateToTwoDecimals(value float64) float64 {
+	truncatedValue := math.Trunc(value*100) / 100
+	return truncatedValue
 }
 
 func getQuoteFromCache(baseCurrency string) *ExchangeResponse {
