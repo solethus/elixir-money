@@ -32,4 +32,12 @@ export class UserService {
   setUser(user: users.User) {
     this.currentUser.set(user);
   }
+
+  async getUserBalance() {
+    const balance = await this.client.payments.GetWallet(
+      this.currentUser().phone_number,
+    );
+
+    return balance;
+  }
 }

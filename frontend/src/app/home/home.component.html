@@ -1,9 +1,16 @@
-<app-header [title]="'Welcome ' + user.first_name + ' ' + user.surname" />
-<div class="content">
-  <div class="balance">
+<app-header [title]="'Welcome ' + user.first_name" />
+
+<div class="content flex flex-col items-center gap-3">
+  <div class="flex items-center mb-4">
     <h4 hlmH4>Balance:</h4>
     &nbsp;
-    <!-- <p hlmP>{{ user.balance }}</p> -->
+    @if (balance(); as balance) {
+      <p hlmP>
+        {{ balance.balance | currency: balance.currency }}
+      </p>
+    } @else {
+      <hlm-spinner size="sm" />
+    }
   </div>
 
   <button hlmBtn routerLink="/lookup">Send Money</button>
