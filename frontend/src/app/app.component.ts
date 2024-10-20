@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ChildrenOutletContexts, RouterOutlet } from '@angular/router';
 import { slideInAnimation } from './app.routes';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,17 @@ import { slideInAnimation } from './app.routes';
 export class AppComponent {
   title = 'elixir';
 
-  constructor(private contexts: ChildrenOutletContexts) {}
+  constructor(private contexts: ChildrenOutletContexts) {
+    const document = inject(DOCUMENT);
+    const documentClassList = document.documentElement.classList;
+
+    const prefersDarkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    documentClassList.toggle('dark', prefersDarkQuery.matches);
+    prefersDarkQuery.addEventListener('change', (e) =>
+      documentClassList.toggle('dark', e.matches),
+    );
+  }
 
   getRouteAnimationData() {
     return this.contexts.getContext('primary')?.route?.snapshot?.data?.[
