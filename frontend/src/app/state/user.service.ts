@@ -1,10 +1,13 @@
 import { Injectable, Signal, signal, WritableSignal } from '@angular/core';
-import { users } from '@client';
+import Client, { users } from '@client';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
+  private client = new Client(environment.environment);
+
   private currentUser: WritableSignal<users.User>;
 
   user: Signal<users.User>;

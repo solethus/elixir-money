@@ -1,5 +1,6 @@
 import { Injectable, signal } from '@angular/core';
-import Client, { Local, users, payments } from '@client';
+import Client, { users, payments } from '@client';
+import { environment } from '../../environments/environment';
 
 export type QuoteDetails = payments.QuoteResponse & {
   amount: number;
@@ -10,7 +11,7 @@ export type QuoteDetails = payments.QuoteResponse & {
   providedIn: 'root',
 })
 export class SendService {
-  private client = new Client(Local);
+  private client = new Client(environment.environment);
 
   private targetUser = signal<users.User | null>(null);
 
