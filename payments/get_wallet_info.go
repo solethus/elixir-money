@@ -43,6 +43,6 @@ func (s *Service) GetWallet(ctx context.Context, phoneNumber string) (*WalletRes
 
 	return &WalletResponse{
 		Currency: user.User.FiatWalletCurrency,
-		Balance:  quote.TargetCurrencyAmount,
+		Balance:  quote.SecondaryCurrencyQuote,
 	}, nil
 }

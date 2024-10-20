@@ -118,7 +118,11 @@ export namespace payments {
     }
 
     export interface QuoteResponse {
-        "target_currency_amount": string
+        /**
+         * Won't actually be used in the send, just for information purposes to show to user
+         */
+        "secondary_currency_quote": string
+
         "usdc_amount": string
         "usdc_fees": string
     }
@@ -134,11 +138,32 @@ export namespace payments {
         "receiver_balance": number
     }
 
+    export interface WalletResponse {
+        /**
+         * Currency of the logged-in user
+         */
+        currency: string
+
+        /**
+         * Balance of the logged-in user
+         */
+        balance: string
+    }
+
     export class ServiceClient {
         private baseClient: BaseClient
 
         constructor(baseClient: BaseClient) {
             this.baseClient = baseClient
+        }
+
+        /**
+         * GetWallet returns the wallet information
+         */
+        public async GetWallet(phoneNumber: string): Promise<WalletResponse> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callAPI("POST", `/payments/balance/${encodeURIComponent(phoneNumber)}`)
+            return await resp.json() as WalletResponse
         }
 
         /**

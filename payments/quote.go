@@ -20,9 +20,9 @@ type QuoteParams struct {
 }
 
 type QuoteResponse struct {
-	TargetCurrencyAmount string `json:"target_currency_amount"`
-	USDCAmount           string `json:"usdc_amount"`
-	USDCFees             string `json:"usdc_fees"`
+	SecondaryCurrencyQuote string `json:"secondary_currency_quote"` // Won't actually be used in the send, just for information purposes to show to user
+	USDCAmount             string `json:"usdc_amount"`
+	USDCFees               string `json:"usdc_fees"`
 }
 
 var quoteCache []ExchangeResponse
@@ -72,9 +72,9 @@ func (s *Service) Quote(ctx context.Context, p *QuoteParams) (*QuoteResponse, er
 	usdcConvertedAmount := p.Amount * usdcRate
 
 	res := &QuoteResponse{
-		TargetCurrencyAmount: fmt.Sprintf("%.2f", targetConvertedAmount),
-		USDCAmount:           fmt.Sprintf("%.2f", usdcConvertedAmount),
-		USDCFees:             "0.0",
+		SecondaryCurrencyQuote: fmt.Sprintf("%.2f", targetConvertedAmount),
+		USDCAmount:             fmt.Sprintf("%.2f", usdcConvertedAmount),
+		USDCFees:               "0.0",
 	}
 	return res, nil
 }
