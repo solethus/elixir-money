@@ -29,6 +29,12 @@ export const routes: Routes = [
     data: { animation: 'SendPage' },
   },
   {
+    path: 'confirm',
+    loadComponent: () =>
+      import('./confirm/confirm.component').then((c) => c.ConfirmComponent),
+    data: { animation: 'ConfirmPage' },
+  },
+  {
     path: '**',
     redirectTo: '',
   },
