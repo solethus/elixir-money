@@ -18,7 +18,7 @@ tasks:
   test:
     desc: Run all unit tests.
     cmds:
-      - encore test
+      - encore test ./...
 
   test-coverage:
     desc: Run unit tests with coverage reporting
