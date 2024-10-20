@@ -1,6 +1,7 @@
 <button
-  type="submit"
+  #submitButton
   hlmBtn
+  type="submit"
   [attr.disabled]="loading() ? true : null"
   (click)="clicked.emit()"
 >

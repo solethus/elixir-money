@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, ElementRef, input, output, viewChild } from '@angular/core';
 import {} from '@ng-icons/core';
 import { lucideLoader2, lucideArrowRight, lucideSend } from '@ng-icons/lucide';
 import { HlmIconComponent, provideIcons } from '@spartan-ng/ui-icon-helm';
@@ -25,4 +25,13 @@ export class SubmitButtonComponent {
   submitText = input<'Next' | 'Send'>('Next');
 
   clicked = output();
+
+  submitButton = viewChild.required<string, ElementRef<HTMLButtonElement>>(
+    'submitButton',
+    { read: ElementRef },
+  );
+
+  focus() {
+    this.submitButton().nativeElement.focus();
+  }
 }
