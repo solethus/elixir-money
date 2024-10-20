@@ -114,17 +114,20 @@ export namespace payments {
     export interface QuoteParams {
         "currency_code": string
         amount: number
-        "target_currency_code": string
+        /**
+         * Other currency to get the quote in, aside from USDC.
+         */
+        "secondary_currency_code": string
     }
 
     export interface QuoteResponse {
         /**
-         * Won't actually be used in the send, just for information purposes to show to user
+         * Won't actually be used in the send, just for information purposes to show to user.
          */
-        "secondary_currency_quote": string
+        "secondary_currency_quote": number
 
-        "usdc_amount": string
-        "usdc_fees": string
+        "usdc_amount": number
+        "usdc_fees": number
     }
 
     export interface SendParams {
@@ -147,7 +150,7 @@ export namespace payments {
         /**
          * Balance of the logged-in user
          */
-        balance: string
+        balance: number
     }
 
     export class ServiceClient {
