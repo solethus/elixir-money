@@ -92,7 +92,9 @@
           "builder": "angular-cli-ghpages:deploy",
           "options": {
             "baseHref": "/elixir-money/",
-            "remote": "origin"
+            "remote": "origin",
+            "email": "solethu@ssongca.com",
+            "name": "Solethu Ssongca"
           }
         }
       }
