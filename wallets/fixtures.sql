@@ -1,0 +1,15 @@
+INSERT INTO wallets (user_id, usdc_wallet_address, usdc_wallet_address_pk, assigned, usdc_balance)
+SELECT %d, '0xA3bFa1234c8D4aFe897CefD0C843d89EdE4a90d1', '0xA3bFa1234c8D4aFe897CefD0C843d89EdE4a90d1PK', true, 1000.00
+WHERE NOT EXISTS (
+    SELECT 1 FROM wallets WHERE user_id = %d
+)
+UNION ALL
+SELECT %d, '0xB4eF21f6eD7b4832F8270De44dB7EeA234cd5678', '0xB4eF21f6eD7b4832F8270De44dB7EeA234cd5678PK', true, 1000.00
+WHERE NOT EXISTS (
+    SELECT 1 FROM wallets WHERE user_id = %d
+)
+UNION ALL
+SELECT %d, '0x9D5aA5eA2f13a2c478c8A489F4f523EdC9f12345', '0x9D5aA5eA2f13a2c478c8A489F4f523EdC9f12345PK', true, 1000.00
+WHERE NOT EXISTS (
+    SELECT 1 FROM wallets WHERE user_id = %d
+);

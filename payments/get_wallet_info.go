@@ -2,9 +2,12 @@ package payments
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	"encore.app/users"
 	"encore.app/wallets"
+	"encore.dev/beta/errs"
 )
 
 type WalletResponse struct {
@@ -23,12 +26,18 @@ func (s *Service) GetWallet(ctx context.Context, phoneNumber string) (*WalletRes
 	}
 	user, err := users.LookupByPhoneNo(ctx, &args)
 	if err != nil {
-		return nil, err
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, errs.Wrap(&errs.Error{Code: errs.NotFound, Message: err.Error()}, "user not found for phone no.")
+		}
+		return nil, errs.Wrap(&errs.Error{Code: errs.Unknown, Message: err.Error()}, "error looking up user")
 	}
 
 	walletBal, err := wallets.GetBalance(ctx, user.User.ID)
 	if err != nil {
-		return nil, err
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, errs.Wrap(&errs.Error{Code: errs.NotFound, Message: err.Error()}, "balance not found for user ID.")
+		}
+		return nil, errs.Wrap(&errs.Error{Code: errs.Unknown, Message: err.Error()}, "error looking up user")
 	}
 
 	argsQuote := QuoteParams{

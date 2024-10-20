@@ -101,7 +101,7 @@ func (q *Queries) LookupWalletBalance(ctx context.Context, userID int32) (float6
 
 const updateWalletBalance = `-- name: UpdateWalletBalance :exec
 UPDATE wallets
-SET usdc_balance = $1,
+SET usdc_balance = usdc_balance - $1,
     updated_at = CURRENT_TIMESTAMP
 WHERE user_id = $2
 `

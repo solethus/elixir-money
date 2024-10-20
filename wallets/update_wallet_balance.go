@@ -22,6 +22,10 @@ type UpdateWalletBalancesResponse struct {
 //
 //encore:api private path=/wallets/update-balance
 func (s *Service) UpdateWalletBalances(ctx context.Context, p *UpdateWalletBalancesParams) (*UpdateWalletBalancesResponse, error) {
+	if p.SenderUserID == p.ReceiverUserID {
+		return nil, &errs.Error{Code: errs.InvalidArgument, Message: "sender cannot be the same as receiver"}
+	}
+
 	tx, err := s.db.Begin()
 	if err != nil {
 		return nil, errs.Wrap(&errs.Error{Code: errs.Unknown, Message: err.Error()}, "starting transaction")

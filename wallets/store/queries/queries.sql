@@ -25,7 +25,7 @@ RETURNING id
 
 -- name: UpdateWalletBalance :exec
 UPDATE wallets
-SET usdc_balance = $1,
+SET usdc_balance = usdc_balance - $1,
     updated_at = CURRENT_TIMESTAMP
 WHERE user_id = $2;
 

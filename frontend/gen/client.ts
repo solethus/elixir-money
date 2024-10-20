@@ -31,7 +31,6 @@ export function PreviewEnv(pr: number | string): BaseURL {
  */
 export default class Client {
     public readonly deposits: deposits.ServiceClient
-    public readonly frontend: frontend.ServiceClient
     public readonly payments: payments.ServiceClient
     public readonly users: users.ServiceClient
     public readonly withdrawals: withdrawals.ServiceClient
@@ -46,7 +45,6 @@ export default class Client {
     constructor(target: BaseURL, options?: ClientOptions) {
         const base = new BaseClient(target, options ?? {})
         this.deposits = new deposits.ServiceClient(base)
-        this.frontend = new frontend.ServiceClient(base)
         this.payments = new payments.ServiceClient(base)
         this.users = new users.ServiceClient(base)
         this.withdrawals = new withdrawals.ServiceClient(base)
@@ -86,26 +84,6 @@ export namespace deposits {
             // Now make the actual call to the API
             const resp = await this.baseClient.callAPI("POST", `/deposits/create`)
             return await resp.json() as CreateResponse
-        }
-    }
-}
-
-export namespace frontend {
-
-    export class ServiceClient {
-        private baseClient: BaseClient
-
-        constructor(baseClient: BaseClient) {
-            this.baseClient = baseClient
-        }
-
-        /**
-         * Serve serves the frontend for development.
-         * For production use we recommend deploying the frontend
-         * using Vercel, Netlify, or similar.
-         */
-        public async Serve(method: string, path: string[], body?: BodyInit, options?: CallParameters): Promise<Response> {
-            return this.baseClient.callAPI(method, `/frontend/${path.map(encodeURIComponent).join("/")}`, body, options)
         }
     }
 }
