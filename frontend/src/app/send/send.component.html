@@ -3,19 +3,22 @@
   [backButtonUrl]="['/lookup']"
 />
 
-<hlm-form-field class="mb-4">
-  <label hlmLabel>
-    Amount
-    <input
-      class="w-80"
-      hlmInput
-      type="tel"
-      placeholder="Amount"
-      [formControl]="amountControl"
-      [currencyMask]="currencyMaskConfig()"
-    />
-  </label>
-  <hlm-hint>The amount of {{ currencyCode() }} to send.</hlm-hint>
-</hlm-form-field>
+<form [formGroup]="amountForm" (ngSubmit)="next()">
+  <hlm-form-field class="mb-4">
+    <label hlmLabel>
+      Amount
+      <input
+        hlmInput
+        appFocus
+        class="w-80"
+        formControlName="amount"
+        type="tel"
+        placeholder="Amount"
+        [currencyMask]="currencyMaskConfig()"
+      />
+    </label>
+    <hlm-hint>The amount of {{ currencyCode() }} to send.</hlm-hint>
+  </hlm-form-field>
 
-<app-submit-button [loading]="loading()" (clicked)="next()" />
+  <app-submit-button [loading]="loading()" (clicked)="next()" />
+</form>

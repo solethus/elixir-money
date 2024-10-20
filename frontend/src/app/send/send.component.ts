@@ -1,19 +1,29 @@
-import { Component, computed, model, Signal, signal } from '@angular/core';
+import { Component, computed, Signal, signal } from '@angular/core';
 import { HlmFormFieldModule } from '@spartan-ng/ui-formfield-helm';
 import { HlmInputDirective } from '@spartan-ng/ui-input-helm';
 import { HlmH2Directive } from '@spartan-ng/ui-typography-helm';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 import { HlmIconComponent } from '@spartan-ng/ui-icon-helm';
 import { HlmButtonDirective } from '@spartan-ng/ui-button-helm';
 import { Router } from '@angular/router';
-import { NgxCurrencyConfig, NgxCurrencyDirective } from 'ngx-currency';
+import {
+  NgxCurrencyConfig,
+  NgxCurrencyDirective,
+  NgxCurrencyInputMode,
+} from 'ngx-currency';
 import { HeaderComponent } from '../header/header.component';
 import { SubmitButtonComponent } from '../submit-button/submit-button.component';
 import { SendService } from '../state/send.service';
 import { users } from '@client';
 import { UserService } from '../state/user.service';
 import { getCurrencySymbol } from '../utils/get-currency-symbol';
+import { FocusDirective } from '../utils/focus.directive';
 
 @Component({
   selector: 'app-send',
@@ -28,15 +38,17 @@ import { getCurrencySymbol } from '../utils/get-currency-symbol';
     NgxCurrencyDirective,
     HeaderComponent,
     SubmitButtonComponent,
+    FocusDirective,
   ],
-  providers: [],
   templateUrl: './send.component.html',
   styleUrl: './send.component.scss',
 })
 export class SendComponent {
   loading = signal(false);
 
-  amountControl = new FormControl(0, [Validators.required]);
+  amountForm = new FormGroup({
+    amount: new FormControl(0, [Validators.required]),
+  });
 
   currencyCode: Signal<string>;
   currencyMaskConfig: Signal<Partial<NgxCurrencyConfig>>;
@@ -78,13 +90,16 @@ export class SendComponent {
         prefix: `${symbol} `,
         thousands: ',',
         nullable: false,
+        inputMode: NgxCurrencyInputMode.Financial,
       };
     });
   }
 
   async next() {
-    if (!this.amountControl.valid || !this.amountControl.value) {
-      this.amountControl.markAsTouched();
+    const amount = this.amountForm.controls.amount.value;
+
+    if (!this.amountForm.valid || !amount) {
+      this.amountForm.controls.amount.markAsTouched();
       return;
     }
 

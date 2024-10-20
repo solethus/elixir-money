@@ -1,5 +1,10 @@
-import { Component, computed, Signal, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, computed, Signal, signal, viewChild } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { SendService } from '../state/send.service';
 import { users } from '@client';
 import { HlmFormFieldModule } from '@spartan-ng/ui-formfield-helm';
@@ -25,6 +30,7 @@ import {
 import { HlmButtonDirective } from '@spartan-ng/ui-button-helm';
 import { HlmIconComponent } from '@spartan-ng/ui-icon-helm';
 import { HeaderComponent } from '../header/header.component';
+import { FocusDirective } from '../utils/focus.directive';
 
 export const fadeIn = trigger('fadeIn', [
   state('void', style({ opacity: 0 })),
@@ -48,6 +54,7 @@ export const fadeIn = trigger('fadeIn', [
     ReactiveFormsModule,
     SubmitButtonComponent,
     HeaderComponent,
+    FocusDirective,
   ],
   templateUrl: './lookup.component.html',
   styleUrl: './lookup.component.scss',
@@ -56,9 +63,13 @@ export const fadeIn = trigger('fadeIn', [
 export class LookupComponent {
   loading = signal(false);
 
-  phoneNumberControl = new FormControl('', [Validators.required]);
+  phoneNumberGroup = new FormGroup({
+    phoneNumber: new FormControl('', [Validators.required]),
+  });
 
   targetUser: Signal<users.User | null>;
+
+  submitButton = viewChild.required(SubmitButtonComponent);
 
   constructor(
     private sendService: SendService,
@@ -80,10 +91,15 @@ export class LookupComponent {
     return String.fromCodePoint(...codePoints);
   });
 
-  async lookupPhoneNo(event: FocusEvent) {
-    const phoneNumber = this.phoneNumberControl.value;
+  async lookupPhoneNo() {
+    const phoneNumberControl = this.phoneNumberGroup.controls.phoneNumber;
+    const phoneNumber = phoneNumberControl.value;
 
-    if (!this.phoneNumberControl.valid || !phoneNumber) {
+    if (this.targetUser()?.phone_number === phoneNumber) {
+      return;
+    }
+
+    if (!this.phoneNumberGroup.valid || !phoneNumber) {
       this.sendService.clearTargetUser();
       return;
     }
@@ -93,17 +109,18 @@ export class LookupComponent {
     try {
       const user = await this.sendService.lookupPhoneNo(phoneNumber);
       if (!user) {
-        this.phoneNumberControl.setErrors({
+        phoneNumberControl.setErrors({
           invalid: 'User not found',
         });
         return;
       }
 
       this.sendService.setTargetUser(user);
+      this.submitButton().focus();
     } catch (error) {
       this.sendService.clearTargetUser();
       console.error('error', error);
-      this.phoneNumberControl.setErrors({
+      phoneNumberControl.setErrors({
         invalid: 'User not found',
       });
     } finally {
@@ -113,8 +130,8 @@ export class LookupComponent {
 
   next() {
     const targetUser = this.targetUser();
-    if (!this.phoneNumberControl.valid || !targetUser) {
-      this.phoneNumberControl.markAsTouched();
+    if (!this.phoneNumberGroup.valid || !targetUser) {
+      this.phoneNumberGroup.markAsTouched();
       return;
     }
 

@@ -1,47 +1,51 @@
 <app-header title="Who do you want to send money to?" [backButtonUrl]="['/']" />
 
-<hlm-form-field class="mb-4">
-  <label hlmLabel
-    >Phone number
-    <input
-      class="w-80"
-      hlmInput
-      type="text"
-      placeholder="Who do you want to send money to?"
-      [formControl]="phoneNumberControl"
-      (blur)="lookupPhoneNo($event)"
-    />
-  </label>
-  @if (
-    phoneNumberControl.invalid &&
-    (phoneNumberControl.dirty || phoneNumberControl.touched)
-  ) {
-    @if (phoneNumberControl.hasError("required")) {
-      <hlm-error>Phone number is required.</hlm-error>
-    }
-    @if (phoneNumberControl.hasError("invalid")) {
-      <hlm-error>Invalid phone number provided.</hlm-error>
-    }
-  }
-</hlm-form-field>
-
-@if (targetUser(); as user) {
-  <section hlmCard class="mb-4 fade-in" [@fadeIn]>
-    <div hlmCardHeader>
-      <img
-        width="96"
-        height="96"
-        [src]="user.image_url"
-        [alt]="user.first_name + ' ' + user.surname"
+<form [formGroup]="phoneNumberGroup" (ngSubmit)="next()">
+  <hlm-form-field class="mb-4">
+    <label hlmLabel
+      >Phone number
+      <input
+        hlmInput
+        class="w-80"
+        type="text"
+        placeholder="Who do you want to send money to?"
+        formControlName="phoneNumber"
+        (keydown.enter)="lookupPhoneNo()"
+        (blur)="lookupPhoneNo()"
       />
-      <div class="ml-2">
-        <h3 hlmCardTitle>{{ user.first_name }} {{ user.surname }}</h3>
-        <p hlmCardDescription>{{ user.country_code }}</p>
-        <span>{{ flagEmoji() }}</span>
-        <p hlmCardDescription>{{ user.phone_number }}</p>
-      </div>
-    </div>
-  </section>
-}
+    </label>
+    @let phoneNumberControl = phoneNumberGroup.controls.phoneNumber;
+    @if (
+      phoneNumberControl.invalid &&
+      (phoneNumberControl.dirty || phoneNumberControl.touched)
+    ) {
+      @if (phoneNumberControl.hasError("required")) {
+        <hlm-error>Phone number is required.</hlm-error>
+      }
+      @if (phoneNumberControl.hasError("invalid")) {
+        <hlm-error>Invalid phone number provided.</hlm-error>
+      }
+    }
+  </hlm-form-field>
 
-<app-submit-button [loading]="loading()" (clicked)="next()" />
+  @if (targetUser(); as user) {
+    <section hlmCard class="mb-4 fade-in" [@fadeIn]>
+      <div hlmCardHeader>
+        <img
+          width="96"
+          height="96"
+          [src]="user.image_url"
+          [alt]="user.first_name + ' ' + user.surname"
+        />
+        <div class="ml-2">
+          <h3 hlmCardTitle>{{ user.first_name }} {{ user.surname }}</h3>
+          <p hlmCardDescription>{{ user.country_code }}</p>
+          <span>{{ flagEmoji() }}</span>
+          <p hlmCardDescription>{{ user.phone_number }}</p>
+        </div>
+      </div>
+    </section>
+  }
+
+  <app-submit-button [loading]="loading()" (clicked)="next()" />
+</form>
