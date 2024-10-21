@@ -38,3 +38,8 @@ WHERE user_id = $1;
 SELECT id, user_id, usdc_wallet_address, usdc_wallet_address_pk, usdc_balance, created_at, updated_at, assigned
 FROM wallets
 WHERE user_id = $1;
+
+-- name: CountUnassignedWallets :many
+SELECT COUNT(*)
+FROM wallets
+LIMIT 1;

@@ -10,6 +10,35 @@ import (
 	"database/sql"
 )
 
+const countUnassignedWallets = `-- name: CountUnassignedWallets :many
+SELECT COUNT(*)
+FROM wallets
+LIMIT 1
+`
+
+func (q *Queries) CountUnassignedWallets(ctx context.Context) ([]int64, error) {
+	rows, err := q.db.QueryContext(ctx, countUnassignedWallets)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []int64
+	for rows.Next() {
+		var count int64
+		if err := rows.Scan(&count); err != nil {
+			return nil, err
+		}
+		items = append(items, count)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getUnassignedWallet = `-- name: GetUnassignedWallet :one
 SELECT id
 FROM wallets

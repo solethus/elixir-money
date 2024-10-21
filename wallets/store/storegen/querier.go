@@ -9,6 +9,7 @@ import (
 )
 
 type Querier interface {
+	CountUnassignedWallets(ctx context.Context) ([]int64, error)
 	GetUnassignedWallet(ctx context.Context) (int32, error)
 	InsertIntoWallets(ctx context.Context, arg InsertIntoWalletsParams) (int32, error)
 	LookupWallet(ctx context.Context, userID int32) (LookupWalletRow, error)
