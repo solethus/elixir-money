@@ -181,12 +181,12 @@ export class SendComponent {
     }
 
     try {
-      const quote = await this.sendService.generateQuote(amount, counter, base);
+      const quote = await this.sendService.generateQuote(amount, base, counter);
       this.sendService.setQuote({
         ...quote,
         amount,
-        base: counter,
-        counter: base,
+        base,
+        counter,
       });
       this.router.navigate(['/confirm']);
     } catch (error) {
