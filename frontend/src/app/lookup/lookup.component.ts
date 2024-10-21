@@ -80,8 +80,10 @@ export class LookupComponent {
     this.targetUser = this.sendService.getTargetUser();
 
     // TODO remove this default value
-    this.phoneNumberGroup.controls.phoneNumber.setValue('+447911123456');
-    this.lookupPhoneNo();
+    setTimeout(() => {
+      this.phoneNumberGroup.controls.phoneNumber.setValue('+447911123456');
+      this.lookupPhoneNo();
+    }, 1500);
   }
 
   flagEmoji = computed(() => {
