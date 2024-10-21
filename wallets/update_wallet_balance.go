@@ -51,7 +51,7 @@ func (s *Service) UpdateWalletBalances(ctx context.Context, p *UpdateWalletBalan
 	}
 
 	updateSenderParams := storegen.UpdateWalletBalanceParams{
-		UsdcBalance: -p.USDCAmount, // Remove amount from sender's account
+		UsdcBalance: p.USDCAmount, // Amount to remove
 		UserID:      p.SenderUserID,
 	}
 
@@ -61,7 +61,7 @@ func (s *Service) UpdateWalletBalances(ctx context.Context, p *UpdateWalletBalan
 	}
 
 	updateReceiverParams := storegen.UpdateWalletBalanceParams{
-		UsdcBalance: p.USDCAmount,
+		UsdcBalance: -p.USDCAmount, // Crediting this amount
 		UserID:      p.ReceiverUserID,
 	}
 
