@@ -8,7 +8,7 @@
     <p hlmMuted>USDC {{ quote.usdc_amount | currency: "" : "" }}</p>
     <p hlmMuted>Fees (USDC): {{ quote.usdc_fees | currency: "" : "" }}</p>
     <p hlmMuted>
-      Counter:
+      Equivalent:
       {{ quote.secondary_currency_quote | currency: quote.counter : "symbol" }}
     </p>
   </div>
