@@ -2,12 +2,19 @@
 
 @if (quote(); as quote) {
   <div class="mb-4">
-    <h3 hlmH3 class="text-4xl">
-      {{ quote.amount | currency: "" }}
-    </h3>
+    @if (baseValue(); as base) {
+      <h3 hlmH3 class="text-4xl">
+        {{ base.amount | currency: base.currency }}
+      </h3>
+    }
     <p hlmMuted>USDC {{ quote.usdc_amount | currency: "" : "" }}</p>
     <p hlmMuted>Fees (USDC): {{ quote.usdc_fees | currency: "" : "" }}</p>
-    <p hlmMuted>Total: {{ quote.secondary_currency_quote | currency: quote.amountCurrency }}</p>
+
+    @if (counterValue(); as counter) {
+      <p hlmMuted>
+        Counter: {{ counter?.amount | currency: counter?.currency }}
+      </p>
+    }
   </div>
 }
 

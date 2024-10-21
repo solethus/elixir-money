@@ -4,7 +4,8 @@ import { environment } from '../../environments/environment';
 
 export type QuoteDetails = payments.QuoteResponse & {
   amount: number;
-  amountCurrency: string;
+  base: string;
+  counter: string;
 };
 
 @Injectable({

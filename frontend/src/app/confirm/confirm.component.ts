@@ -41,7 +41,7 @@ export class ConfirmComponent {
     if (!quote) {
       return '';
     }
-    return getCurrencySymbol(quote.amountCurrency);
+    return getCurrencySymbol(quote.base);
   });
 
   amount = computed(() => {
@@ -50,6 +50,36 @@ export class ConfirmComponent {
       return 0;
     }
     return quote.amount;
+  });
+
+  baseValue = computed(() => {
+    const quote = this.quote();
+    if (!quote) {
+      return null;
+    }
+
+    return {
+      amount:
+        quote.base === this.currentUser().fiat_wallet_currency
+          ? quote.amount
+          : quote.secondary_currency_quote,
+      currency: quote.base,
+    };
+  });
+
+  counterValue = computed(() => {
+    const quote = this.quote();
+    if (!quote) {
+      return null;
+    }
+
+    return {
+      amount:
+        quote.counter === this.currentUser().fiat_wallet_currency
+          ? quote.amount
+          : quote.secondary_currency_quote,
+      currency: quote.counter,
+    };
   });
 
   constructor(
@@ -72,7 +102,7 @@ export class ConfirmComponent {
     const targetUser = this.targetUser();
     const amount = Number(quote?.usdc_amount);
 
-    if (!quote || !targetUser || isNaN(amount)) {
+    if (!targetUser || isNaN(amount)) {
       return;
     }
 

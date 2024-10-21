@@ -1,4 +1,12 @@
-import { Component, computed, Signal, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  Signal,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { HlmFormFieldModule } from '@spartan-ng/ui-formfield-helm';
 import { HlmInputDirective } from '@spartan-ng/ui-input-helm';
 import { HlmH2Directive } from '@spartan-ng/ui-typography-helm';
@@ -11,6 +19,12 @@ import {
 
 import { HlmIconComponent } from '@spartan-ng/ui-icon-helm';
 import { HlmButtonDirective } from '@spartan-ng/ui-button-helm';
+import { BrnSelectImports } from '@spartan-ng/ui-select-brain';
+import { HlmSelectImports } from '@spartan-ng/ui-select-helm';
+// import {
+// ComboBoxOption,
+// HlmComboboxComponent,
+// from '@spartan-ng/ui-combobox-helm';
 import { Router } from '@angular/router';
 import {
   NgxCurrencyConfig,
@@ -22,8 +36,11 @@ import { SubmitButtonComponent } from '../submit-button/submit-button.component'
 import { SendService } from '../state/send.service';
 import { users } from '@client';
 import { UserService } from '../state/user.service';
-import { FocusDirective } from '../utils/focus.directive';
 import { getCurrencySymbol } from '../utils';
+import { FocusDirective } from '../utils/focus.directive';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+// @ts-ignore
+import { getEmojiByCurrencyCode } from 'country-currency-emoji-flags';
 
 @Component({
   selector: 'app-send',
@@ -39,6 +56,8 @@ import { getCurrencySymbol } from '../utils';
     HeaderComponent,
     SubmitButtonComponent,
     FocusDirective,
+    BrnSelectImports,
+    HlmSelectImports,
   ],
   templateUrl: './send.component.html',
   styleUrl: './send.component.scss',
@@ -46,15 +65,18 @@ import { getCurrencySymbol } from '../utils';
 export class SendComponent {
   loading = signal(false);
 
-  amountForm = new FormGroup({
-    amount: new FormControl(0, [Validators.required]),
-  });
+  amountForm: FormGroup<{
+    currency: FormControl<string | null>;
+    amount: FormControl<number | null>;
+  }>;
 
-  currencyCode: Signal<string>;
+  currencyCode: WritableSignal<string>;
   currencyMaskConfig: Signal<Partial<NgxCurrencyConfig>>;
+  currencyOptions: Signal<{ label: string; value: string; flag: string }[]>;
 
   targetUser: Signal<users.User>;
   user: Signal<users.User>;
+  destroyRef = inject(DestroyRef);
 
   constructor(
     private sendService: SendService,
@@ -69,14 +91,51 @@ export class SendComponent {
       this.targetUser = signal(null!);
       this.currencyCode = signal(null!);
       this.currencyMaskConfig = signal(null!);
+      this.currencyOptions = signal([]);
+      this.amountForm = new FormGroup({
+        currency: new FormControl(''),
+        amount: new FormControl(0),
+      });
       return;
     }
 
     this.targetUser = signal(targetUser);
 
-    this.currencyCode = computed<string>(() => {
-      return this.targetUser().fiat_wallet_currency;
+    const displayNames = new Intl.DisplayNames(['en'], { type: 'currency' });
+
+    const userCurrency = this.user().fiat_wallet_currency;
+    const targetUserCurrency = targetUser.fiat_wallet_currency;
+
+    const currencyOptions = [
+      {
+        label: displayNames.of(userCurrency)!,
+        value: userCurrency,
+        flag: getEmojiByCurrencyCode(userCurrency),
+      },
+      {
+        label: displayNames.of(targetUserCurrency)!,
+        value: targetUserCurrency,
+        flag: getEmojiByCurrencyCode(targetUserCurrency),
+      },
+    ];
+
+    this.currencyOptions = signal(currencyOptions);
+
+    this.currencyCode = signal(userCurrency);
+
+    this.amountForm = new FormGroup({
+      currency: new FormControl(this.currencyCode(), [Validators.required]),
+      amount: new FormControl(0, [Validators.required]),
     });
+
+    this.amountForm.controls.currency.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((currency) => {
+        if (!currency) {
+          return;
+        }
+        this.currencyCode.set(currency);
+      });
 
     this.currencyMaskConfig = computed<Partial<NgxCurrencyConfig>>(() => {
       const currency = this.currencyCode();
@@ -105,35 +164,29 @@ export class SendComponent {
 
     this.loading.set(true);
 
-    let baseCurrency: 'mine' | 'theirs' | 'other';
-    let base: string;
     let counter: string;
+    let base: string;
+    const userCurrency = this.user().fiat_wallet_currency;
+    const targetUserCurrency = this.targetUser().fiat_wallet_currency;
 
-    if (this.user().fiat_wallet_currency !== this.currencyCode()) {
-      baseCurrency = 'theirs';
-      base = this.user().fiat_wallet_currency;
-      counter = this.targetUser().fiat_wallet_currency;
-    } else if (this.user().fiat_wallet_currency === this.currencyCode()) {
-      baseCurrency = 'mine';
-      base = this.targetUser().fiat_wallet_currency;
-      counter = this.user().fiat_wallet_currency;
+    if (userCurrency !== this.currencyCode()) {
+      base = targetUserCurrency;
+      counter = userCurrency;
+    } else if (userCurrency === this.currencyCode()) {
+      base = userCurrency;
+      counter = targetUserCurrency;
     } else {
-      baseCurrency = 'other';
-      base = this.currencyCode();
-      counter = this.user().fiat_wallet_currency;
+      base = userCurrency;
+      counter = this.currencyCode();
     }
 
     try {
-      const quote = await this.sendService.generateQuote(
-        amount,
-        // Make this configurable, based on the user currency selection.
-        base,
-        counter,
-      );
+      const quote = await this.sendService.generateQuote(amount, counter, base);
       this.sendService.setQuote({
         ...quote,
         amount,
-        amountCurrency: base,
+        base: counter,
+        counter: base,
       });
       this.router.navigate(['/confirm']);
     } catch (error) {

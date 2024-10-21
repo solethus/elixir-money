@@ -4,6 +4,25 @@
 />
 
 <form [formGroup]="amountForm" (ngSubmit)="next()">
+  <brn-select
+    class="block mb-4"
+    placeholder="Currency"
+    formControlName="currency"
+  >
+    <hlm-select-trigger>
+      <hlm-select-value />
+    </hlm-select-trigger>
+    <hlm-select-content class="w-full">
+      @for (option of currencyOptions(); track option.value) {
+        <hlm-option [value]="option.value"
+          ><span>{{ option.flag }}</span>
+          &nbsp;
+          {{ option.label }}</hlm-option
+        >
+      }
+    </hlm-select-content>
+  </brn-select>
+
   <hlm-form-field class="mb-4">
     <label hlmLabel>
       Amount
