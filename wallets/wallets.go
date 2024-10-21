@@ -1,3 +1,4 @@
+// Service wallets manages the pre-generation and assignment of wallets and handles other wallet information.
 package wallets
 
 import (

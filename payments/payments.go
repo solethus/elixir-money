@@ -1,3 +1,4 @@
+// Service payments handles the the retrieve of quote information and facilitates sends between users
 package payments
 
 import (

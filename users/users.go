@@ -1,3 +1,4 @@
+// Service users handles user related information
 package users
 
 import (

@@ -1,3 +1,4 @@
+// Service withdrawals facilitates the conversion of USDC back to fiat currency.
 package withdrawals
 
 // Service struct, learn more: https://encore.dev/docs/primitives/services-and-apis/service-structs

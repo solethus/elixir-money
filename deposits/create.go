@@ -1,3 +1,4 @@
+// Service deposits facilitates the add of fiat currency which will be exchanged for USDC
 package deposits
 
 import (
