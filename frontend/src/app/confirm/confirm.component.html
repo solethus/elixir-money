@@ -3,11 +3,11 @@
 @if (quote(); as quote) {
   <div class="mb-4">
     <h3 hlmH3 class="text-4xl">
-      {{ quote.secondary_currency_quote | currency: "" }}
+      {{ quote.amount | currency: "" }}
     </h3>
     <p hlmMuted>USDC {{ quote.usdc_amount | currency: "" : "" }}</p>
     <p hlmMuted>Fees (USDC): {{ quote.usdc_fees | currency: "" : "" }}</p>
-    <p hlmMuted>Total: {{ quote.amount | currency: quote.amountCurrency }}</p>
+    <p hlmMuted>Total: {{ quote.secondary_currency_quote | currency: quote.amountCurrency }}</p>
   </div>
 }
 
