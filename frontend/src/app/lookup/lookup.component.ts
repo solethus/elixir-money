@@ -3,6 +3,7 @@ import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { SendService } from '../state/send.service';
@@ -73,9 +74,11 @@ export const fadeIn = trigger('fadeIn', [
 export class LookupComponent {
   loading = signal(false);
 
-  phoneNumberGroup = new FormGroup({
-    phoneNumber: new FormControl('', [Validators.required]),
-  });
+  userPhoneNumberValidator: ValidatorFn;
+
+  phoneNumberGroup: FormGroup<{
+    phoneNumber: FormControl<string | null>;
+  }>;
 
   targetUser: Signal<users.User | null>;
 
@@ -104,6 +107,22 @@ export class LookupComponent {
         ),
       ),
     );
+
+    this.userPhoneNumberValidator = (control) => {
+      const currentUserPhoneNumber = this.userService
+        .user()
+        .phone_number.replace('+', '');
+      return control.value === currentUserPhoneNumber
+        ? { userPhoneNumber: 'Cannot use your own phone number' }
+        : null;
+    };
+
+    this.phoneNumberGroup = new FormGroup({
+      phoneNumber: new FormControl('', [
+        Validators.required,
+        this.userPhoneNumberValidator,
+      ]),
+    });
 
     const sendParams = this.sendService.getSendParams()();
 

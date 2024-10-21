@@ -27,6 +27,9 @@
       @if (phoneNumberControl.hasError("invalid")) {
         <hlm-error>Invalid phone number provided.</hlm-error>
       }
+      @if (phoneNumberControl.hasError("userPhoneNumber")) {
+        <hlm-error>You must provide a number other than your own.</hlm-error>
+      }
     }
   </hlm-form-field>
 
