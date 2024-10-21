@@ -12,7 +12,6 @@ import {
   HlmPDirective,
 } from '@spartan-ng/ui-typography-helm';
 import { CurrencyPipe } from '@angular/common';
-import { getCurrencySymbol } from '../utils';
 
 @Component({
   selector: 'app-confirm',
@@ -35,52 +34,6 @@ export class ConfirmComponent {
   quote: Signal<QuoteDetails | null>;
   targetUser: Signal<users.User | null>;
   currentUser: Signal<users.User>;
-
-  symbol = computed(() => {
-    const quote = this.quote();
-    if (!quote) {
-      return '';
-    }
-    return getCurrencySymbol(quote.base);
-  });
-
-  amount = computed(() => {
-    const quote = this.quote();
-    if (!quote) {
-      return 0;
-    }
-    return quote.amount;
-  });
-
-  baseValue = computed(() => {
-    const quote = this.quote();
-    if (!quote) {
-      return null;
-    }
-
-    return {
-      amount:
-        quote.base === this.currentUser().fiat_wallet_currency
-          ? quote.amount
-          : quote.secondary_currency_quote,
-      currency: quote.base,
-    };
-  });
-
-  counterValue = computed(() => {
-    const quote = this.quote();
-    if (!quote) {
-      return null;
-    }
-
-    return {
-      amount:
-        quote.counter === this.currentUser().fiat_wallet_currency
-          ? quote.amount
-          : quote.secondary_currency_quote,
-      currency: quote.counter,
-    };
-  });
 
   constructor(
     private router: Router,
