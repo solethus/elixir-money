@@ -22,8 +22,8 @@ import { SubmitButtonComponent } from '../submit-button/submit-button.component'
 import { SendService } from '../state/send.service';
 import { users } from '@client';
 import { UserService } from '../state/user.service';
-import { getCurrencySymbol } from '../utils/get-currency-symbol';
 import { FocusDirective } from '../utils/focus.directive';
+import { getCurrencySymbol } from '../utils';
 
 @Component({
   selector: 'app-send',

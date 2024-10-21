@@ -11,8 +11,8 @@ import {
   HlmMutedDirective,
   HlmPDirective,
 } from '@spartan-ng/ui-typography-helm';
-import { getCurrencySymbol } from '../utils/get-currency-symbol';
 import { CurrencyPipe } from '@angular/common';
+import { getCurrencySymbol } from '../utils';
 
 @Component({
   selector: 'app-confirm',
