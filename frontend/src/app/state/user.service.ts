@@ -40,4 +40,10 @@ export class UserService {
 
     return balance;
   }
+
+  async getUsers() {
+    const users = await this.client.users.ListUsers();
+
+    return users.user;
+  }
 }

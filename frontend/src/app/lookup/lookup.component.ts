@@ -34,6 +34,9 @@ import { HeaderComponent } from '../header/header.component';
 import { FocusDirective } from '../utils/focus.directive';
 import { getEmojiFromCountryCode } from '../utils';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
+import { UserService } from '../state/user.service';
+import { from, map } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 export const fadeIn = trigger('fadeIn', [
   state('void', style({ opacity: 0 })),
@@ -76,7 +79,7 @@ export class LookupComponent {
 
   targetUser: Signal<users.User | null>;
 
-  recentUsers: Signal<Partial<users.User>[]>;
+  recentUsers: Signal<users.User[] | undefined>;
 
   submitButton = viewChild.required(SubmitButtonComponent);
 
@@ -86,14 +89,21 @@ export class LookupComponent {
   constructor(
     private sendService: SendService,
     private router: Router,
+    private userService: UserService,
   ) {
     this.sendService.clearTargetUser();
     this.targetUser = this.sendService.getTargetUser();
 
-    this.recentUsers = signal<Partial<users.User>[]>([
-      { first_name: 'Ed', surname: 'Harrod', phone_number: '447911123456' },
-      { first_name: 'Solethu', surname: 'Songca', phone_number: '27823456789' },
-    ]);
+    this.recentUsers = toSignal(
+      from(this.userService.getUsers()).pipe(
+        map((users) =>
+          users.filter(
+            (user) =>
+              user.phone_number !== this.userService.user().phone_number,
+          ),
+        ),
+      ),
+    );
 
     const sendParams = this.sendService.getSendParams()();
 
@@ -113,8 +123,10 @@ export class LookupComponent {
     return getEmojiFromCountryCode(user.country_code);
   });
 
-  selectRecentUser(user: Partial<users.User>) {
-    this.phoneNumberGroup.controls.phoneNumber.setValue(user.phone_number!);
+  selectRecentUser(user: users.User) {
+    this.phoneNumberGroup.controls.phoneNumber.setValue(
+      user.phone_number.replace('+', ''),
+    );
     this.lookupPhoneNo();
   }
 
