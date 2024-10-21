@@ -35,6 +35,7 @@
     "clsx": "^2.1.1",
     "country-currency-emoji-flags": "^1.1.1",
     "ngx-currency": "^18.0.0",
+    "ngx-mask": "^18.0.0",
     "ngx-sonner": "^2.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

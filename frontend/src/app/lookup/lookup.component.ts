@@ -32,6 +32,7 @@ import { HlmIconComponent } from '@spartan-ng/ui-icon-helm';
 import { HeaderComponent } from '../header/header.component';
 import { FocusDirective } from '../utils/focus.directive';
 import { getEmojiFromCountryCode } from '../utils';
+import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 
 export const fadeIn = trigger('fadeIn', [
   state('void', style({ opacity: 0 })),
@@ -56,7 +57,10 @@ export const fadeIn = trigger('fadeIn', [
     SubmitButtonComponent,
     HeaderComponent,
     FocusDirective,
+    NgxMaskDirective,
+    NgxMaskPipe,
   ],
+  providers: [provideNgxMask()],
   templateUrl: './lookup.component.html',
   styleUrl: './lookup.component.scss',
   animations: [fadeIn],
@@ -72,6 +76,9 @@ export class LookupComponent {
 
   submitButton = viewChild.required(SubmitButtonComponent);
 
+  mask = '00 (00) 000-000||00 (00) 000-0000||00 (000) 000-0000';
+  prefix = '+';
+
   constructor(
     private sendService: SendService,
     private router: Router,
@@ -81,7 +88,7 @@ export class LookupComponent {
 
     // TODO remove this default value
     setTimeout(() => {
-      this.phoneNumberGroup.controls.phoneNumber.setValue('+447911123456');
+      this.phoneNumberGroup.controls.phoneNumber.setValue('447911123456');
       this.lookupPhoneNo();
     }, 1500);
   }
@@ -96,7 +103,7 @@ export class LookupComponent {
 
   async lookupPhoneNo() {
     const phoneNumberControl = this.phoneNumberGroup.controls.phoneNumber;
-    const phoneNumber = phoneNumberControl.value;
+    let phoneNumber = phoneNumberControl.value;
 
     if (this.targetUser()?.phone_number === phoneNumber) {
       return;
@@ -106,6 +113,8 @@ export class LookupComponent {
       this.sendService.clearTargetUser();
       return;
     }
+
+    phoneNumber = `${this.prefix}${phoneNumber}`;
 
     this.loading.set(true);
 
