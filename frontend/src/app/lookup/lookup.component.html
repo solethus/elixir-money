@@ -30,6 +30,22 @@
     }
   </hlm-form-field>
 
+  <div class="mb-4">
+    <h4>Recent users</h4>
+    <div class="flex flex-wrap">
+      @for (user of recentUsers(); track $index) {
+        <button
+          hlmBadge
+          type="button"
+          class="mr-2 mb-2"
+          (click)="selectRecentUser(user)"
+        >
+          {{ user.first_name }} {{ user.surname }}
+        </button>
+      }
+    </div>
+  </div>
+
   @if (targetUser(); as user) {
     <section hlmCard class="mb-4 fade-in" [@fadeIn]>
       <div hlmCardHeader>

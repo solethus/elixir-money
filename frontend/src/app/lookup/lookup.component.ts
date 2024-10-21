@@ -29,6 +29,7 @@ import {
 } from '@angular/animations';
 import { HlmButtonDirective } from '@spartan-ng/ui-button-helm';
 import { HlmIconComponent } from '@spartan-ng/ui-icon-helm';
+import { HlmBadgeDirective } from '@spartan-ng/ui-badge-helm';
 import { HeaderComponent } from '../header/header.component';
 import { FocusDirective } from '../utils/focus.directive';
 import { getEmojiFromCountryCode } from '../utils';
@@ -59,6 +60,7 @@ export const fadeIn = trigger('fadeIn', [
     FocusDirective,
     NgxMaskDirective,
     NgxMaskPipe,
+    HlmBadgeDirective,
   ],
   providers: [provideNgxMask()],
   templateUrl: './lookup.component.html',
@@ -74,6 +76,8 @@ export class LookupComponent {
 
   targetUser: Signal<users.User | null>;
 
+  recentUsers: Signal<Partial<users.User>[]>;
+
   submitButton = viewChild.required(SubmitButtonComponent);
 
   mask = '00 (00) 000-000||00 (00) 000-0000||00 (000) 000-0000';
@@ -86,20 +90,18 @@ export class LookupComponent {
     this.sendService.clearTargetUser();
     this.targetUser = this.sendService.getTargetUser();
 
-    const alreadySetNumber = this.sendService.getSendParams()()?.targetPhoneNo;
+    this.recentUsers = signal<Partial<users.User>[]>([
+      { first_name: 'Ed', surname: 'Harrod', phone_number: '447911123456' },
+      { first_name: 'Solethu', surname: 'Songca', phone_number: '27823456789' },
+    ]);
 
-    if (alreadySetNumber) {
-      this.phoneNumberGroup.controls.phoneNumber.setValue(alreadySetNumber);
+    const sendParams = this.sendService.getSendParams()();
+
+    if (sendParams?.targetPhoneNo) {
+      this.phoneNumberGroup.controls.phoneNumber.setValue(
+        sendParams.targetPhoneNo,
+      );
       this.lookupPhoneNo();
-      return;
-    }
-
-    // TODO remove this default value
-    if (this.phoneNumberGroup.controls.phoneNumber.value === '') {
-      setTimeout(() => {
-        this.phoneNumberGroup.controls.phoneNumber.setValue('447911123456');
-        this.lookupPhoneNo();
-      }, 1500);
     }
   }
 
@@ -110,6 +112,11 @@ export class LookupComponent {
     }
     return getEmojiFromCountryCode(user.country_code);
   });
+
+  selectRecentUser(user: Partial<users.User>) {
+    this.phoneNumberGroup.controls.phoneNumber.setValue(user.phone_number!);
+    this.lookupPhoneNo();
+  }
 
   async lookupPhoneNo() {
     const phoneNumberControl = this.phoneNumberGroup.controls.phoneNumber;
