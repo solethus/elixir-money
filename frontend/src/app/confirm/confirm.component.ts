@@ -12,6 +12,7 @@ import {
   HlmPDirective,
 } from '@spartan-ng/ui-typography-helm';
 import { CurrencyPipe } from '@angular/common';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-confirm',
@@ -67,11 +68,10 @@ export class ConfirmComponent {
         targetUser.phone_number,
         amount,
       );
-      // Play some kinda animation here before routing? Rive animations?
-      // Update the user balance with the new balance here?
-      // send.sender_balance
+      toast.success('Send successful!');
       this.router.navigate(['/']);
     } catch (error) {
+      toast.error('Error processing transaction');
     } finally {
       this.loading.set(false);
     }

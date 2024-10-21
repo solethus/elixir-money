@@ -41,6 +41,7 @@ import { FocusDirective } from '../utils/focus.directive';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 // @ts-ignore
 import { getEmojiByCurrencyCode } from 'country-currency-emoji-flags';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-send',
@@ -190,6 +191,7 @@ export class SendComponent {
       });
       this.router.navigate(['/confirm']);
     } catch (error) {
+      toast.error('Error generating quote');
     } finally {
       this.loading.set(false);
     }

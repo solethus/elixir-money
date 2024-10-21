@@ -2,11 +2,12 @@ import { Component, inject } from '@angular/core';
 import { ChildrenOutletContexts, RouterOutlet } from '@angular/router';
 import { slideInAnimation } from './app.routes';
 import { DOCUMENT } from '@angular/common';
+import { HlmToasterComponent } from '@spartan-ng/ui-sonner-helm';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, HlmToasterComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   animations: [slideInAnimation],
