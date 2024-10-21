@@ -153,6 +153,16 @@ export class SendComponent {
         inputMode: NgxCurrencyInputMode.Financial,
       };
     });
+
+    const sendParams = this.sendService.getSendParams()();
+
+    if (sendParams?.currency && sendParams.amount) {
+      this.amountForm.setValue({
+        currency: sendParams?.currency,
+        amount: sendParams.amount,
+      });
+      return;
+    }
   }
 
   async next() {
@@ -169,6 +179,8 @@ export class SendComponent {
     let base: string;
     const userCurrency = this.user().fiat_wallet_currency;
     const targetUserCurrency = this.targetUser().fiat_wallet_currency;
+
+    this.sendService.setSendParams({ currency: this.currencyCode(), amount });
 
     if (userCurrency !== this.currencyCode()) {
       base = targetUserCurrency;

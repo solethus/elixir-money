@@ -86,11 +86,21 @@ export class LookupComponent {
     this.sendService.clearTargetUser();
     this.targetUser = this.sendService.getTargetUser();
 
-    // TODO remove this default value
-    setTimeout(() => {
-      this.phoneNumberGroup.controls.phoneNumber.setValue('447911123456');
+    const alreadySetNumber = this.sendService.getSendParams()()?.targetPhoneNo;
+
+    if (alreadySetNumber) {
+      this.phoneNumberGroup.controls.phoneNumber.setValue(alreadySetNumber);
       this.lookupPhoneNo();
-    }, 1500);
+      return;
+    }
+
+    // TODO remove this default value
+    if (this.phoneNumberGroup.controls.phoneNumber.value === '') {
+      setTimeout(() => {
+        this.phoneNumberGroup.controls.phoneNumber.setValue('447911123456');
+        this.lookupPhoneNo();
+      }, 1500);
+    }
   }
 
   flagEmoji = computed(() => {
@@ -142,11 +152,18 @@ export class LookupComponent {
 
   next() {
     const targetUser = this.targetUser();
-    if (!this.phoneNumberGroup.valid || !targetUser) {
+    if (
+      !this.phoneNumberGroup.valid ||
+      !targetUser ||
+      !this.phoneNumberGroup.controls.phoneNumber.value
+    ) {
       this.phoneNumberGroup.markAsTouched();
       return;
     }
 
+    this.sendService.setSendParams({
+      targetPhoneNo: this.phoneNumberGroup.controls.phoneNumber.value,
+    });
     this.router.navigate(['/send']);
   }
 }

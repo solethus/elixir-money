@@ -8,6 +8,12 @@ export type QuoteDetails = payments.QuoteResponse & {
   counter: string;
 };
 
+export interface SendParams {
+  targetPhoneNo?: string;
+  amount?: number;
+  currency?: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -42,18 +48,18 @@ export class SendService {
     this.quote.set(null);
   }
 
-  private amount = signal<number | null>(null);
+  private sendParams = signal<SendParams | null>(null);
 
-  getAmount() {
-    return this.amount.asReadonly();
+  getSendParams() {
+    return this.sendParams.asReadonly();
   }
 
-  setAmount(amount: number) {
-    this.amount.set(amount);
+  setSendParams(quote: SendParams) {
+    this.sendParams.set(quote);
   }
 
-  clearAmount() {
-    this.quote.set(null);
+  clearSendParams() {
+    this.sendParams.set(null);
   }
 
   async lookupPhoneNo(phoneNo: string) {

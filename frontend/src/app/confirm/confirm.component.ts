@@ -70,6 +70,9 @@ export class ConfirmComponent {
       );
       toast.success('Send successful!');
       this.router.navigate(['/']);
+      this.sendService.clearQuote();
+      this.sendService.clearSendParams();
+      this.sendService.clearTargetUser();
     } catch (error) {
       toast.error('Error processing transaction');
     } finally {
