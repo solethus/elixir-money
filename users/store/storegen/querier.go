@@ -10,6 +10,7 @@ import (
 
 type Querier interface {
 	InsertIntoUsers(ctx context.Context, arg InsertIntoUsersParams) (int32, error)
+	ListUsers(ctx context.Context) ([]ListUsersRow, error)
 	LookupUserByID(ctx context.Context, id int32) (LookupUserByIDRow, error)
 	LookupUserByName(ctx context.Context, arg LookupUserByNameParams) (LookupUserByNameRow, error)
 	LookupUserByPhoneNumber(ctx context.Context, phoneNumber string) (LookupUserByPhoneNumberRow, error)

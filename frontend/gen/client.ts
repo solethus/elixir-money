@@ -185,6 +185,10 @@ export namespace users {
         imageUrl: string
     }
 
+    export interface ListUsersResponse {
+        user: User[]
+    }
+
     export interface LookupByPhoneNoParams {
         UserPhoneNo: string
     }
@@ -220,6 +224,12 @@ export namespace users {
             // Now make the actual call to the API
             const resp = await this.baseClient.callAPI("POST", `/users/create`, JSON.stringify(params))
             return await resp.json() as CreateResponse
+        }
+
+        public async ListUsers(): Promise<ListUsersResponse> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callAPI("POST", `/users`)
+            return await resp.json() as ListUsersResponse
         }
 
         public async LookupByPhoneNo(params: LookupByPhoneNoParams): Promise<LookupByPhoneNoResponse> {

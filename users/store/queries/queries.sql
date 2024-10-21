@@ -78,3 +78,7 @@ SET updated_at           = CURRENT_TIMESTAMP AT TIME ZONE 'UTC',
     image_url            = COALESCE(sqlc.arg('image_url'), image_url)
 WHERE id = @id :: INT
 RETURNING id;
+
+-- name: ListUsers :many
+SELECT first_name, surname, phone_number
+FROM users;
