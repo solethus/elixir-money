@@ -31,6 +31,7 @@ import { HlmButtonDirective } from '@spartan-ng/ui-button-helm';
 import { HlmIconComponent } from '@spartan-ng/ui-icon-helm';
 import { HeaderComponent } from '../header/header.component';
 import { FocusDirective } from '../utils/focus.directive';
+import { getEmojiFromCountryCode } from '../utils';
 
 export const fadeIn = trigger('fadeIn', [
   state('void', style({ opacity: 0 })),
@@ -88,11 +89,7 @@ export class LookupComponent {
     if (!user?.country_code) {
       return null;
     }
-    const codePoints = user.country_code
-      .toUpperCase()
-      .split('')
-      .map((char) => 127462 + char.charCodeAt(0) - 65);
-    return String.fromCodePoint(...codePoints);
+    return getEmojiFromCountryCode(user.country_code);
   });
 
   async lookupPhoneNo() {
